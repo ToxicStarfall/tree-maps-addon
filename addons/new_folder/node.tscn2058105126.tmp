@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://ctluay8kkm6b8"]
 
-[ext_resource type="Script" uid="uid://d2m0hkeep073t" path="res://node_tree.gd" id="2_112p8"]
-[ext_resource type="Script" uid="uid://cn4fi27bjgvjq" path="res://node_tree_item.gd" id="3_112p8"]
+[ext_resource type="Script" uid="uid://d2m0hkeep073t" path="res://addons/new_folder/tree_map.gd" id="2_112p8"]
+[ext_resource type="Script" uid="uid://cn4fi27bjgvjq" path="res://addons/new_folder/tree_map_node.gd" id="3_112p8"]
 
 [sub_resource type="Gradient" id="Gradient_e2u21"]
 
@@ -26,28 +26,34 @@ curve = SubResource("Curve2D_nxiqb")
 
 [node name="NodeTree" type="Node2D" parent="."]
 script = ExtResource("2_112p8")
+nodes = Array[Vector2]([Vector2(48, 48), Vector2(96, 288), Vector2(432, 56), Vector2(440, 304)])
 
 [node name="NodeTreeItem" type="Node2D" parent="NodeTree"]
-position = Vector2(184, 48)
+position = Vector2(48, 48)
 script = ExtResource("3_112p8")
-outputs = [1, 2, 3]
+outputs = Array[int]([2, 3, 1])
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
 [node name="NodeTreeItem2" type="Node2D" parent="NodeTree"]
-position = Vector2(256, 312)
+position = Vector2(96, 216)
 script = ExtResource("3_112p8")
+editing_state = 1
+editing_connections = true
+outputs = Array[int]([3])
+inputs = Array[int]([0])
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
 [node name="NodeTreeItem3" type="Node2D" parent="NodeTree"]
-position = Vector2(552, 96)
+position = Vector2(432, 56)
 script = ExtResource("3_112p8")
-outputs = [3]
+outputs = Array[int]([3])
+inputs = Array[int]([0])
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
 [node name="NodeTreeItem4" type="Node2D" parent="NodeTree"]
-position = Vector2(680, 304)
+position = Vector2(504, 216)
 script = ExtResource("3_112p8")
+editing_state = 1
+editing_connections = true
+inputs = Array[int]([0, 1, 2])
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
-
-[connection signal="child_entered_tree" from="NodeTree" to="NodeTree" method="_on_child_entered_tree"]
-[connection signal="child_exiting_tree" from="NodeTree" to="NodeTree" method="_on_child_exiting_tree"]

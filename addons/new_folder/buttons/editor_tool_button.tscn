@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://c3pssfeg4hawj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xg628"]
+bg_color = Color(0.23, 0.23, 0.23, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.439216, 0.729412, 0.980392, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w5nyu"]
+bg_color = Color(0.23, 0.23, 0.23, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d8l5m"]
+bg_color = Color(0.180392, 0.180392, 0.180392, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.439216, 0.729412, 0.980392, 1)
+
+[node name="EditorToolButton" type="Button"]
+offset_right = 8.0
+offset_bottom = 8.0
+size_flags_vertical = 3
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_xg628")
+theme_override_styles/hover = SubResource("StyleBoxFlat_w5nyu")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_d8l5m")
+toggle_mode = true
+icon_alignment = 1

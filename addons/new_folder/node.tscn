@@ -24,35 +24,36 @@ visible = false
 position = Vector2(237, -27)
 curve = SubResource("Curve2D_nxiqb")
 
-[node name="NodeTree" type="Node2D" parent="."]
+[node name="NodeTree" type="Node2D" parent="." node_paths=PackedStringArray("edited_nodes")]
 script = ExtResource("2_112p8")
-nodes = Array[Vector2]([Vector2(0, 0), Vector2(0, 216), Vector2(504, 0), Vector2(504, 216)])
+edited_nodes = [NodePath("TreeMapNode4")]
+nodes = Array[Vector2]([Vector2(0, 96), Vector2(240, 80), Vector2(256, 216), Vector2(0, 248)])
 
-[node name="NodeTreeItem" type="Node2D" parent="NodeTree"]
+[node name="TreeMapNode" type="Node2D" parent="NodeTree"]
+position = Vector2(0, 96)
 script = ExtResource("3_112p8")
-outputs = Array[int]([2, 3, 1])
+inputs = Array[int]([1])
+line_color = Color(1, 0.06, 0.06, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
-[node name="NodeTreeItem2" type="Node2D" parent="NodeTree"]
-position = Vector2(0, 216)
+[node name="TreeMapNode2" type="Node2D" parent="NodeTree"]
+position = Vector2(256, 96)
 script = ExtResource("3_112p8")
-editing_state = 1
-editing_connections = true
-outputs = Array[int]([3])
-inputs = Array[int]([0])
+outputs = Array[int]([2, 0])
+inputs = Array[int]([3])
+line_color = Color(0.06, 1, 0.420333, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
-[node name="NodeTreeItem3" type="Node2D" parent="NodeTree"]
-position = Vector2(504, 0)
+[node name="TreeMapNode3" type="Node2D" parent="NodeTree"]
+position = Vector2(256, 216)
 script = ExtResource("3_112p8")
-outputs = Array[int]([3])
-inputs = Array[int]([0])
+inputs = Array[int]([1])
+line_color = Color(1, 0.06, 0.06, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
-[node name="NodeTreeItem4" type="Node2D" parent="NodeTree"]
-position = Vector2(504, 216)
+[node name="TreeMapNode4" type="Node2D" parent="NodeTree"]
+position = Vector2(0, 248)
 script = ExtResource("3_112p8")
-editing_state = 1
-editing_connections = true
-inputs = Array[int]([0, 1, 2])
+outputs = Array[int]([1])
+line_color = Color(1, 0.06, 0.06, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"

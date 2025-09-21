@@ -8,10 +8,14 @@ var editor_tool_button_hbox = HBoxContainer.new()
 var edit_button: Button = editor_tool_button.instantiate()
 var add_button: Button = editor_tool_button.instantiate()
 var remove_button: Button = editor_tool_button.instantiate()
+var chain_button: Button = editor_tool_button.instantiate()
 
-var editing: bool = false
-
-var selected_node
+var tools = {
+	add = editor_tool_button.instantiate(),
+	remove = editor_tool_button.instantiate(),
+	#collapse = editor_tool_button.instantiate(),
+	#merge = editor_tool_button.instantiate()
+}
 
 
 func _init() -> void:
@@ -55,16 +59,18 @@ func _on_selection_changed():
 	var show = false
 	for node in selection:
 		if node is TreeMap or node is TreeMapNode:
-				show = true
-				break
+			show = true
+			break
 	editor_tool_button_hbox.visible = show
 
 
 func _handles(object: Object) -> bool:
 	if object is TreeMap or object is TreeMapNode:
-		selected_node = object
-		#print("handle intercepted")
-		#return true
+		if object is TreeMapNode:
+			PluginState.selected_tree_map = object.get_parent()
+		if object is TreeMap:
+			PluginState.selected_tree_map = object
+		edit_button.button_pressed = PluginState.selected_tree_map.editing # Update edit_button to match editing state
 		return true
 	else: return false
 
@@ -72,7 +78,7 @@ func _handles(object: Object) -> bool:
 func _forward_canvas_gui_input(event: InputEvent) -> bool:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			#if selected_node is NodeTree:
+			#if selected_node is TreeMap:
 
 			#for node_pos in selected_node.nodes:
 				#var mouse_dist = get_viewport().get_mouse_position().distance_to(node_pos)
@@ -80,13 +86,18 @@ func _forward_canvas_gui_input(event: InputEvent) -> bool:
 				#if mouse_dist <= 100:
 					#print("KAJSDNAJS")
 			#print("mouse left intercepted")
-			pass
-		if event.button_index == MOUSE_BUTTON_RIGHT:
-			#print("mouse right intercepted")
-			EditorInterface.get_selection().clear()
-		return false
-	else:
-		return false
+			return false
+		else:
+			if event.button_index == MOUSE_BUTTON_RIGHT:
+				# Disable editing on the selected [TreeMap] on Mouse Right Click
+				if PluginState.selected_tree_map.editing:
+					PluginState.selected_tree_map.editing = false
+					edit_button.button_pressed = false
+					EditorInterface.get_editor_toaster().push_toast("Editing disabled", EditorToaster.SEVERITY_INFO)
+					return true
+				#print("mouse right intercepted")
+			return false
+	else:  return false
 
 
 func _init_tool_buttons():
@@ -94,22 +105,25 @@ func _init_tool_buttons():
 	editor_tool_button_hbox.add_child(edit_button)
 	editor_tool_button_hbox.add_child(add_button)
 	editor_tool_button_hbox.add_child(remove_button)
+	editor_tool_button_hbox.add_child(VSeparator.new())
 
 	for b in editor_tool_button_hbox.get_children():
 		#b.visible = false  # hide buttons by default
 		b.size.x = b.size.y  # Make buttons square
 
-	edit_button.icon = EditorInterface.get_editor_theme().get_icon("EditAddRemove", "EditorIcons")
-	edit_button.pressed.connect( func(): PluginState.is_editing = !PluginState.is_editing )
+	#edit_button.icon = EditorInterface.get_editor_theme().get_icon("EditAddRemove", "EditorIcons")
+	edit_button.icon = EditorInterface.get_editor_theme().get_icon("CurveEdit", "EditorIcons")
+	edit_button.pressed.connect( func(): PluginState.selected_tree_map.toggle_editing() )
 	edit_button.tooltip_text = "Edit Connections"
 
 	add_button.icon = EditorInterface.get_editor_theme().get_icon("CurveCreate", "EditorIcons")
 	#add_button.pressed.connect( func(): pass )
-	edit_button.tooltip_text = "Add Nodes"
+	add_button.tooltip_text = "Add Nodes"
 
 	remove_button.icon = EditorInterface.get_editor_theme().get_icon("CurveDelete", "EditorIcons")
 	#remove_button.pressed.connect( func(): pass )
-	edit_button.tooltip_text = "Remove Nodes"
+	remove_button.tooltip_text = "Remove Nodes"
+
 
 
 func _add_tool_buttons():

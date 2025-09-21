@@ -1,10 +1,10 @@
 extends Node
 
 
-var edit_button: Button
+#@export var is_editing: bool = false
+#var is_editing_connections: bool = false
+#var is_editing_position: bool = false
 
-@export var is_editing: bool = false
-var is_editing_connections: bool = false
-var is_editing_position: bool = false
+#var edited_nodes = []
 
-var selected_node
+@export var selected_tree_map: TreeMap

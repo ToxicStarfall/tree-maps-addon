@@ -2,55 +2,65 @@
 class_name TreeMapNode
 extends Node2D
 
-#@export_tool_button("None", "ToolSelect") var enable_editing_connection_action = func(): toggle_editing_connection()
-#@export_tool_button("Edit Connections", "EditAddRemove") var toggle_edit_connections_action = func(): toggle_editing_connections()
-
 signal moved
-#signal node_edited
 signal connections_edited
 
-enum EditingState { NONE, EDITING, ADDING, REMOVING }
-
-#@export_category("Setup")
-@export var editing_state: EditingState = EditingState.NONE
-@export var editing_connections: bool = false
 
 @export var outputs: Array[int] = []
 @export var inputs: Array[int] = []
 
-const DEFAULT_ARROW_TEXTURE = preload("res://addons/new_folder/icons/arrow_filled.png")
-var arrow_texture: Texture2D = DEFAULT_ARROW_TEXTURE
-#@export var arrow_texture: Texture2D
+@export var locked: bool = false
 #@export_category("Customization")
 #@export var data: Resource
+
+
 @export_group("Overrides")
-#@export var a = 0
+# Defaults are overidden by TreeMap parent.
+var default_node_color = Color.WHITE
+var default_line_color = Color.WHITE
+var default_arrow_color = Color.WHITE
+var default_arrow_texture = preload("res://addons/new_folder/icons/arrow_filled.png")
+
+@export var node_color: Color = Color.WHITE
+@export var line_color: Color = default_line_color#Color.WHITE
+@export var arrow_color: Color = Color.WHITE  ## Modulates default texture color
+@export var arrow_texture: Texture2D = preload("res://addons/new_folder/icons/arrow_filled.png")
+
+
+func _setup():
+	if !node_color: default_node_color = node_color
+	if !line_color: default_line_color = line_color
+	if !arrow_color: default_arrow_color = arrow_color
+	if !arrow_texture: default_arrow_texture = arrow_texture
 
 
 func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		set_notify_transform(true)
+	_setup()
 
 
 func _draw() -> void:
-	_draw_node()
 	_draw_connection()
+	_draw_node()
 
 
 func _draw_connection():
 	for i in outputs:
 		draw_set_transform(Vector2(0,0), 0)  # Reset drawing position
 		var target_pos = get_parent().get_child(i).global_position
-		draw_line(Vector2(0,0) , target_pos - self.global_position, Color.WHITE, 10)
-		var arrow_texture = DEFAULT_ARROW_TEXTURE
+		draw_line(Vector2(0,0) , target_pos - self.global_position, line_color, 10)
+
+		var arrow_texture = arrow_texture
 		var arrow_pos = (target_pos - self.position) / 2  # Get half-way point between nodes
 		var arrow_ang = (target_pos - position).angle()   # Get angle pointing towards next connecting node
 		draw_set_transform(arrow_pos, arrow_ang)  # Set draw offset to arrow position to make it the center rotating point
-		draw_texture(arrow_texture, -arrow_texture.get_size() / 2)
+		draw_texture(arrow_texture, -arrow_texture.get_size() / 2, arrow_color)
 
 
 func _draw_node():
-	draw_circle(Vector2(0,0), 12, Color.WHITE, true)
+	draw_set_transform(Vector2(0,0), 0)
+	draw_circle(Vector2(0,0), 12, node_color, true)
 
 
 func _notification(what) -> void:
@@ -58,32 +68,37 @@ func _notification(what) -> void:
 		moved.emit(self)
 
 
+#func _property_can_revert(property: StringName) -> bool:
+	#return false
+
+
+#func _property_get_revert(property: StringName) -> Variant:
+	#return
+
+
 func toggle_editing_connections():
-	if editing_state: editing_state = EditingState.NONE
-	else: editing_state = EditingState.EDITING
-	editing_connections = !editing_connections
-	connections_edited.emit(self)
-
-
-## Adds a idx for node connections. [br]
-## - If output is false, then add a connection as input
-func add_connection(idx, output: bool = true):
-	var new_connections = outputs.duplicate()
-	new_connections.append(idx)
-	if output:
-		self.outputs = new_connections
-	else:
-		self.inputs = new_connections
-	queue_redraw()
-	#var connection_target = get_last_selected_node()
-	#var connection_target_idx = connection_target.get_index()
-	## prevent duplicate and self from being included
-	#if !new_connections.has(connection_target_idx) and !(selected_node == connection_target):
-		#new_connections.append( connection_target.get_index() )
-
-
-func remove_connection():
 	pass
+
+
+## Adds a idx for node connections.
+func add_connection(idx: int, connection_array: Array[int]):
+	connection_array.append(idx)
+	queue_redraw()
+
+
+func remove_connection(idx: int, connection_array: Array[int]):
+	connection_array.erase(idx)
+	queue_redraw()
+
+
+func swap_connection(idx, old_array, new_array):
+	old_array.erase(idx)
+	new_array.append(idx)
+
+
+# Returns true/false if the Input/Output array has int value of "idx"
+func has_connection(idx: int, connection_array: Array[int]):
+	return connection_array.has(idx)
 
 
 func extend():

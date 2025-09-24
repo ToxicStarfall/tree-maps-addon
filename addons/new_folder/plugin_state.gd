@@ -8,3 +8,4 @@ extends Node
 #var edited_nodes = []
 
 @export var selected_tree_map: TreeMap
+#@export var chaining_enabled: bool = false

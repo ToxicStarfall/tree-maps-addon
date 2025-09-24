@@ -2,6 +2,8 @@
 extends EditorPlugin
 
 
+var tool_buttons = ButtonGroup.new()
+
 var editor_tool_button = preload("res://addons/new_folder/buttons/editor_tool_button.tscn")
 var editor_tool_button_hbox = HBoxContainer.new()
 
@@ -9,16 +11,18 @@ var edit_button: Button = editor_tool_button.instantiate()
 var add_button: Button = editor_tool_button.instantiate()
 var remove_button: Button = editor_tool_button.instantiate()
 var chain_button: Button = editor_tool_button.instantiate()
+var info_button: Button = Button.new()
 
-var tools = {
-	add = editor_tool_button.instantiate(),
-	remove = editor_tool_button.instantiate(),
-	#collapse = editor_tool_button.instantiate(),
-	#merge = editor_tool_button.instantiate()
-}
+
+#var tools = {
+	#add = editor_tool_button.instantiate(),
+	#remove = editor_tool_button.instantiate(),
+#}
 
 
 func _init() -> void:
+	tool_buttons.allow_unpress = true
+	tool_buttons.pressed.connect(_on_tool_button_pressed)
 	_init_tool_buttons()
 
 
@@ -26,14 +30,14 @@ func _enter_tree():
 	_add_tool_buttons()
 
 	EditorInterface.get_selection().selection_changed.connect( _on_selection_changed )
-	get_tree().node_added.connect( _on_scene_tree_node_added )
+	#get_tree().node_added.connect( _on_scene_tree_node_added )
 
 
 func _exit_tree():
 	_remove_tool_buttons()
 
 	EditorInterface.get_selection().selection_changed.disconnect( _on_selection_changed )
-	get_tree().node_added.disconnect( _on_scene_tree_node_added )
+	#get_tree().node_added.disconnect( _on_scene_tree_node_added )
 
 
 func _has_main_screen():
@@ -49,9 +53,9 @@ func _has_main_screen():
 	#return EditorInterface.get_editor_theme().get_icon("Node", "EditorIcons")
 
 
-func _on_scene_tree_node_added(node):
-	if node is TreeMap: #or node is TreeMapNode:
-		pass
+#func _on_scene_tree_node_added(node):
+	#if node is TreeMap: #or node is TreeMapNode:
+		#pass
 
 
 func _on_selection_changed():
@@ -70,7 +74,13 @@ func _handles(object: Object) -> bool:
 			PluginState.selected_tree_map = object.get_parent()
 		if object is TreeMap:
 			PluginState.selected_tree_map = object
-		edit_button.button_pressed = PluginState.selected_tree_map.editing # Update edit_button to match editing state
+		# Update tool buttons display to match the selected TreeMap's editing state
+		if PluginState.selected_tree_map.edit_state != TreeMap.EditStates.NONE:
+			tool_buttons.get_buttons()[max(PluginState.selected_tree_map.edit_state - 1, 0)].button_pressed = true
+		else:
+			for b in tool_buttons.get_buttons():
+				b.button_pressed = false
+		chain_button.button_pressed = PluginState.selected_tree_map.chaining_enabled
 		return true
 	else: return false
 
@@ -90,9 +100,9 @@ func _forward_canvas_gui_input(event: InputEvent) -> bool:
 		else:
 			if event.button_index == MOUSE_BUTTON_RIGHT:
 				# Disable editing on the selected [TreeMap] on Mouse Right Click
-				if PluginState.selected_tree_map.editing:
-					PluginState.selected_tree_map.editing = false
-					edit_button.button_pressed = false
+				if PluginState.selected_tree_map.edit_state != TreeMap.EditStates.NONE:
+					PluginState.selected_tree_map.edit_state = TreeMap.EditStates.NONE
+					tool_buttons.get_pressed_button().button_pressed = false
 					EditorInterface.get_editor_toaster().push_toast("Editing disabled", EditorToaster.SEVERITY_INFO)
 					return true
 				#print("mouse right intercepted")
@@ -106,24 +116,53 @@ func _init_tool_buttons():
 	editor_tool_button_hbox.add_child(add_button)
 	editor_tool_button_hbox.add_child(remove_button)
 	editor_tool_button_hbox.add_child(VSeparator.new())
+	editor_tool_button_hbox.add_child(chain_button)
+	editor_tool_button_hbox.add_child(info_button)
+
+	edit_button.button_group = tool_buttons
+	add_button.button_group = tool_buttons
+	remove_button.button_group = tool_buttons
 
 	for b in editor_tool_button_hbox.get_children():
-		#b.visible = false  # hide buttons by default
 		b.size.x = b.size.y  # Make buttons square
 
-	#edit_button.icon = EditorInterface.get_editor_theme().get_icon("EditAddRemove", "EditorIcons")
 	edit_button.icon = EditorInterface.get_editor_theme().get_icon("CurveEdit", "EditorIcons")
-	edit_button.pressed.connect( func(): PluginState.selected_tree_map.toggle_editing() )
 	edit_button.tooltip_text = "Edit Connections"
 
 	add_button.icon = EditorInterface.get_editor_theme().get_icon("CurveCreate", "EditorIcons")
-	#add_button.pressed.connect( func(): pass )
 	add_button.tooltip_text = "Add Nodes"
 
 	remove_button.icon = EditorInterface.get_editor_theme().get_icon("CurveDelete", "EditorIcons")
-	#remove_button.pressed.connect( func(): pass )
 	remove_button.tooltip_text = "Remove Nodes"
 
+	chain_button.icon = EditorInterface.get_editor_theme().get_icon("InsertAfter", "EditorIcons")
+	chain_button.pressed.connect( func(): PluginState.selected_tree_map.toggle_chaining() )
+	chain_button.tooltip_text = "Chaining"
+
+	info_button.icon = EditorInterface.get_editor_theme().get_icon("Info", "EditorIcons")
+	info_button.tooltip_text = "info"
+
+
+func _on_tool_button_pressed(button):
+	match button:
+		edit_button:
+			if button.button_pressed:
+				PluginState.selected_tree_map.edit_state = TreeMap.EditStates.EDITING
+			else:
+				EditorInterface.get_editor_toaster().push_toast("Editing disabled", EditorToaster.SEVERITY_INFO)
+		add_button:
+			if button.button_pressed:
+				PluginState.selected_tree_map.edit_state = TreeMap.EditStates.ADDING
+			else:
+				EditorInterface.get_editor_toaster().push_toast("Adding disabled", EditorToaster.SEVERITY_INFO)
+		remove_button:
+			if button.button_pressed:
+				PluginState.selected_tree_map.edit_state = TreeMap.EditStates.REMOVING
+			else:
+				EditorInterface.get_editor_toaster().push_toast("Removing disabled", EditorToaster.SEVERITY_INFO)
+
+	if tool_buttons.get_pressed_button() == null:
+		PluginState.selected_tree_map.edit_state = TreeMap.EditStates.NONE
 
 
 func _add_tool_buttons():

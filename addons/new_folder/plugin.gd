@@ -11,6 +11,7 @@ var edit_button: Button = editor_tool_button.instantiate()
 var add_button: Button = editor_tool_button.instantiate()
 var remove_button: Button = editor_tool_button.instantiate()
 var chain_button: Button = editor_tool_button.instantiate()
+var lock_button: Button = Button.new()
 var info_button: Button = Button.new()
 
 
@@ -24,6 +25,7 @@ func _init() -> void:
 	tool_buttons.allow_unpress = true
 	tool_buttons.pressed.connect(_on_tool_button_pressed)
 	_init_tool_buttons()
+	main_screen_changed.connect(_on_main_screen_changed)
 
 
 func _enter_tree():
@@ -38,6 +40,13 @@ func _exit_tree():
 
 	EditorInterface.get_selection().selection_changed.disconnect( _on_selection_changed )
 	#get_tree().node_added.disconnect( _on_scene_tree_node_added )
+
+
+func _on_main_screen_changed(screen_name):
+	if screen_name == "2D":
+		PluginState.viewport_2d_selected = true
+	else:
+		PluginState.viewport_2d_selected = false
 
 
 func _has_main_screen():
@@ -88,13 +97,6 @@ func _handles(object: Object) -> bool:
 func _forward_canvas_gui_input(event: InputEvent) -> bool:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			#if selected_node is TreeMap:
-
-			#for node_pos in selected_node.nodes:
-				#var mouse_dist = get_viewport().get_mouse_position().distance_to(node_pos)
-				#print(mouse_dist)
-				#if mouse_dist <= 100:
-					#print("KAJSDNAJS")
 			#print("mouse left intercepted")
 			return false
 		else:
@@ -147,9 +149,10 @@ func _on_tool_button_pressed(button):
 	match button:
 		edit_button:
 			if button.button_pressed:
-				PluginState.selected_tree_map.edit_state = TreeMap.EditStates.EDITING
+				PluginState.selected_tree_map.toggle_editing(true)
 			else:
-				EditorInterface.get_editor_toaster().push_toast("Editing disabled", EditorToaster.SEVERITY_INFO)
+				PluginState.selected_tree_map.toggle_editing(false)
+
 		add_button:
 			if button.button_pressed:
 				PluginState.selected_tree_map.edit_state = TreeMap.EditStates.ADDING

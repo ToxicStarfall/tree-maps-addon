@@ -16,28 +16,42 @@ signal connections_edited
 
 @export_group("Overrides")
 # Defaults are overidden by TreeMap parent.
+# Default Properties
 var default_node_color = Color.WHITE
 var default_line_color = Color.WHITE
 var default_arrow_color = Color.WHITE
 var default_arrow_texture = preload("res://addons/new_folder/icons/arrow_filled.png")
-
+# Inherited TreeMap Properties
+var parent_line_color: Color
+# Internal Usage Properties
+var internal_line_color = default_line_color
+# Editable Override Properties
 @export var node_color: Color = Color.WHITE
-@export var line_color: Color = default_line_color#Color.WHITE
+@export var line_color: Color = default_line_color
 @export var arrow_color: Color = Color.WHITE  ## Modulates default texture color
 @export var arrow_texture: Texture2D = preload("res://addons/new_folder/icons/arrow_filled.png")
 
 
 func _setup():
-	if !node_color: default_node_color = node_color
-	if !line_color: default_line_color = line_color
-	if !arrow_color: default_arrow_color = arrow_color
-	if !arrow_texture: default_arrow_texture = arrow_texture
+	# If no override property is specified, then use inherited property.
+	#if !node_color: default_node_color = node_color
+	if !line_color: internal_line_color = parent_line_color
+	#if !arrow_color: default_arrow_color = arrow_color
+	#if !arrow_texture: default_arrow_texture = arrow_texture
+	# If no inherited property is specified, then use Default property.
+	if !parent_line_color: internal_line_color = default_line_color
 
 
 func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		set_notify_transform(true)
+		EditorInterface.get_inspector().property_edited.connect( _on_property_edited )
 	_setup()
+
+
+func _exit_tree() -> void:
+	if Engine.is_editor_hint():
+		EditorInterface.get_inspector().property_edited.disconnect( _on_property_edited )
 
 
 func _draw() -> void:
@@ -49,7 +63,7 @@ func _draw_connection():
 	for i in outputs:
 		draw_set_transform(Vector2(0,0), 0)  # Reset drawing position
 		var target_pos = get_parent().get_child(i).global_position
-		draw_line(Vector2(0,0) , target_pos - self.global_position, line_color, 10)
+		draw_line(Vector2(0,0) , target_pos - self.global_position, internal_line_color, 10)
 
 		var arrow_texture = arrow_texture
 		var arrow_pos = (target_pos - self.position) / 2  # Get half-way point between nodes
@@ -68,16 +82,37 @@ func _notification(what) -> void:
 		moved.emit(self)
 
 
-#func _property_can_revert(property: StringName) -> bool:
-	#return false
+func _property_can_revert(property: StringName) -> bool:
+	match property:
+		"line_color":#, "node_color":
+			return true
+	return false
 
 
-#func _property_get_revert(property: StringName) -> Variant:
-	#return
+func _property_get_revert(property: StringName) -> Variant:
+	match property:
+		"line_color":
+			return parent_line_color
+	return
 
 
-func toggle_editing_connections():
-	pass
+#
+func _on_property_edited(property: String):
+	if EditorInterface.get_inspector().get_edited_object() == self:
+		if property == "line_color":
+			apply_properties()
+
+
+# Update properties
+func apply_properties():
+	print("updating properties")
+	if line_color == parent_line_color: internal_line_color = parent_line_color
+	else: internal_line_color = line_color
+	queue_redraw()
+
+
+#func toggle_editing_connections():
+	#pass
 
 
 ## Adds a idx for node connections.
@@ -85,7 +120,7 @@ func add_connection(idx: int, connection_array: Array[int]):
 	connection_array.append(idx)
 	queue_redraw()
 
-
+## Removes idx from node's connection_array
 func remove_connection(idx: int, connection_array: Array[int]):
 	connection_array.erase(idx)
 	queue_redraw()

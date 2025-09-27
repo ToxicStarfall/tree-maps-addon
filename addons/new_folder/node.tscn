@@ -26,48 +26,48 @@ curve = SubResource("Curve2D_nxiqb")
 
 [node name="TreeMap" type="Node2D" parent="." node_paths=PackedStringArray("edited_nodes")]
 script = ExtResource("2_112p8")
-edit_state = 2
-selected_nodes = Array[Node]([Object(Node2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(-260.251, 132.9),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"script":ExtResource("3_112p8"),"outputs":Array[int]([]),"inputs":Array[int]([]),"locked":false,"default_node_color":Color(1, 1, 1, 1),"default_line_color":Color(1, 1, 1, 1),"default_arrow_color":Color(1, 1, 1, 1),"default_arrow_texture":Resource("res://addons/new_folder/icons/arrow_filled.png"),"node_color":Color(1, 1, 1, 1),"line_color":Color(1, 1, 1, 1),"arrow_color":Color(1, 1, 1, 1),"arrow_texture":Resource("res://addons/new_folder/icons/arrow_filled.png"))
-])
-edited_nodes = [NodePath("TreeMapNode2")]
-nodes = Array[Vector2]([Vector2(0, 96), Vector2(152, 136), Vector2(256, 216), Vector2(0, 248), Vector2(328, 40)])
+edited_nodes = [NodePath("TreeMapNode6"), NodePath("TreeMapNode2")]
+nodes = Array[Vector2]([Vector2(0, 88), Vector2(128, 176), Vector2(256, 216), Vector2(0, 208), Vector2(328, 40), Vector2(136, 64)])
+line_color = Color(1, 0, 0, 1)
 
 [node name="TreeMapNode" type="Node2D" parent="TreeMap"]
-position = Vector2(0, 96)
+position = Vector2(0, 56)
 script = ExtResource("3_112p8")
-inputs = Array[int]([1])
-line_color = Color(1, 0.06, 0.06, 1)
+inputs = Array[int]([5, 1])
+line_color = Color(1, 0, 0, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
 [node name="TreeMapNode2" type="Node2D" parent="TreeMap"]
-position = Vector2(152, 136)
+position = Vector2(128, 176)
 script = ExtResource("3_112p8")
-outputs = Array[int]([2, 0, 4])
+outputs = Array[int]([2, 4, 5, 0])
 inputs = Array[int]([3])
-line_color = Color(0.06, 1, 0.420333, 1)
+line_color = Color(1, 0, 0, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
 [node name="TreeMapNode3" type="Node2D" parent="TreeMap"]
 position = Vector2(256, 216)
 script = ExtResource("3_112p8")
 inputs = Array[int]([1])
-line_color = Color(1, 0.06, 0.06, 1)
+line_color = Color(1, 0, 0, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
 [node name="TreeMapNode4" type="Node2D" parent="TreeMap"]
-position = Vector2(0, 248)
+position = Vector2(0, 208)
 script = ExtResource("3_112p8")
 outputs = Array[int]([1])
-line_color = Color(1, 0.06, 0.06, 1)
+line_color = Color(1, 0, 0, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
 [node name="TreeMapNode5" type="Node2D" parent="TreeMap"]
 position = Vector2(328, 40)
 script = ExtResource("3_112p8")
 inputs = Array[int]([1])
-line_color = Color(1, 1, 1, 1)
+line_color = Color(1, 0, 0, 1)
 
 [node name="TreeMapNode6" type="Node2D" parent="TreeMap"]
-position = Vector2(-260.251, 132.9)
+position = Vector2(176, 40)
 script = ExtResource("3_112p8")
-line_color = Color(1, 1, 1, 1)
+outputs = Array[int]([0])
+inputs = Array[int]([1])
+line_color = Color(1, 0, 0, 1)

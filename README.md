@@ -73,13 +73,16 @@ Right click to disable active tool.
 - Chaining (WIP) - selects the targeted node after using a tool
 
 <h4>Miscellaneous</h4>
-Info (WIP)
+- Info (WIP)
 
-<br>
+
 _to be continued..._
+<br><br>
 
 **Demo video**
-[Video]()
+
+https://github.com/user-attachments/assets/fbfc2732-9639-446d-b620-4464e99fa997
+
 
 <br>
 <h3>Examples</h3>

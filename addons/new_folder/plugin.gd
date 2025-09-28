@@ -13,22 +13,34 @@ var remove_button: Button = editor_tool_button.instantiate()
 var chain_button: Button = editor_tool_button.instantiate()
 var lock_button: Button = Button.new()
 var info_button: Button = Button.new()
-
-
 #var tools = {
 	#add = editor_tool_button.instantiate(),
 	#remove = editor_tool_button.instantiate(),
 #}
+
+var selected_tree_map
+
+# Replace this value with a PascalCase autoload name, as per the GDScript style guide.
+#const AUTOLOAD_NAME = "PluginState"
+
+#func _enable_plugin():
+	#add_autoload_singleton(AUTOLOAD_NAME, "res://addons/new_folder/plugin_state.gd")
+
+
+#func _disable_plugin():
+	#remove_autoload_singleton(AUTOLOAD_NAME)
 
 
 func _init() -> void:
 	tool_buttons.allow_unpress = true
 	tool_buttons.pressed.connect(_on_tool_button_pressed)
 	_init_tool_buttons()
-	main_screen_changed.connect(_on_main_screen_changed)
+	_init_custom_types()
+	#main_screen_changed.connect(_on_main_screen_changed)
 
 
 func _enter_tree():
+	#add_autoload_singleton("PluginState", "res://addons/new_folder/plugin_state.gd")
 	_add_tool_buttons()
 
 	EditorInterface.get_selection().selection_changed.connect( _on_selection_changed )
@@ -36,6 +48,7 @@ func _enter_tree():
 
 
 func _exit_tree():
+	#remove_autoload_singleton("PluginState")
 	_remove_tool_buttons()
 
 	EditorInterface.get_selection().selection_changed.disconnect( _on_selection_changed )
@@ -43,10 +56,11 @@ func _exit_tree():
 
 
 func _on_main_screen_changed(screen_name):
-	if screen_name == "2D":
-		PluginState.viewport_2d_selected = true
-	else:
-		PluginState.viewport_2d_selected = false
+	#if screen_name == "2D":
+		#viewport_2d_selected = true
+	#else:
+		#viewport_2d_selected = false
+	pass
 
 
 func _has_main_screen():
@@ -78,38 +92,39 @@ func _on_selection_changed():
 
 
 func _handles(object: Object) -> bool:
+	#if ProjectSettings.get_setting("autoload/PluginState")
 	if object is TreeMap or object is TreeMapNode:
 		if object is TreeMapNode:
-			PluginState.selected_tree_map = object.get_parent()
+			selected_tree_map = object.get_parent()
 		if object is TreeMap:
-			PluginState.selected_tree_map = object
+			selected_tree_map = object
 		# Update tool buttons display to match the selected TreeMap's editing state
-		if PluginState.selected_tree_map.edit_state != TreeMap.EditStates.NONE:
-			tool_buttons.get_buttons()[max(PluginState.selected_tree_map.edit_state - 1, 0)].button_pressed = true
+		if selected_tree_map.edit_state != TreeMap.EditStates.NONE:
+			tool_buttons.get_buttons()[max(selected_tree_map.edit_state - 1, 0)].button_pressed = true
 		else:
 			for b in tool_buttons.get_buttons():
 				b.button_pressed = false
-		chain_button.button_pressed = PluginState.selected_tree_map.chaining_enabled
+		chain_button.button_pressed = selected_tree_map.chaining_enabled
 		return true
 	else: return false
 
 
 func _forward_canvas_gui_input(event: InputEvent) -> bool:
+	var intercepted = false
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			#print("mouse left intercepted")
-			return false
-		else:
-			if event.button_index == MOUSE_BUTTON_RIGHT:
-				# Disable editing on the selected [TreeMap] on Mouse Right Click
-				if PluginState.selected_tree_map.edit_state != TreeMap.EditStates.NONE:
-					PluginState.selected_tree_map.edit_state = TreeMap.EditStates.NONE
-					tool_buttons.get_pressed_button().button_pressed = false
-					EditorInterface.get_editor_toaster().push_toast("Editing disabled", EditorToaster.SEVERITY_INFO)
-					return true
-				#print("mouse right intercepted")
-			return false
-	else:  return false
+			pass
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			# Disable editing on the selected [TreeMap] on Mouse Right Click
+			if selected_tree_map.edit_state != TreeMap.EditStates.NONE:
+				selected_tree_map.edit_state = TreeMap.EditStates.NONE
+				selected_tree_map.edited_nodes.clear()
+				tool_buttons.get_pressed_button().button_pressed = false
+				EditorInterface.get_editor_toaster().push_toast("Editing disabled", EditorToaster.SEVERITY_INFO)
+				intercepted = true
+			#print("mouse right intercepted")
+	return intercepted
 
 
 func _init_tool_buttons():
@@ -138,7 +153,7 @@ func _init_tool_buttons():
 	remove_button.tooltip_text = "Remove Nodes"
 
 	chain_button.icon = EditorInterface.get_editor_theme().get_icon("InsertAfter", "EditorIcons")
-	chain_button.pressed.connect( func(): PluginState.selected_tree_map.toggle_chaining() )
+	chain_button.pressed.connect( func(): selected_tree_map.toggle_chaining() )
 	chain_button.tooltip_text = "Chaining"
 
 	info_button.icon = EditorInterface.get_editor_theme().get_icon("Info", "EditorIcons")
@@ -148,24 +163,14 @@ func _init_tool_buttons():
 func _on_tool_button_pressed(button):
 	match button:
 		edit_button:
-			if button.button_pressed:
-				PluginState.selected_tree_map.toggle_editing(true)
-			else:
-				PluginState.selected_tree_map.toggle_editing(false)
-
+			selected_tree_map.toggle_editing(button.button_pressed)
 		add_button:
-			if button.button_pressed:
-				PluginState.selected_tree_map.edit_state = TreeMap.EditStates.ADDING
-			else:
-				EditorInterface.get_editor_toaster().push_toast("Adding disabled", EditorToaster.SEVERITY_INFO)
+			selected_tree_map.toggle_adding(button.button_pressed)
 		remove_button:
-			if button.button_pressed:
-				PluginState.selected_tree_map.edit_state = TreeMap.EditStates.REMOVING
-			else:
-				EditorInterface.get_editor_toaster().push_toast("Removing disabled", EditorToaster.SEVERITY_INFO)
+			selected_tree_map.toggle_removing(button.button_pressed)
 
 	if tool_buttons.get_pressed_button() == null:
-		PluginState.selected_tree_map.edit_state = TreeMap.EditStates.NONE
+		selected_tree_map.edit_state = TreeMap.EditStates.NONE
 
 
 func _add_tool_buttons():
@@ -180,3 +185,14 @@ func _remove_tool_buttons():
 	#remove_control_from_container(CONTAINER_CANVAS_EDITOR_MENU, edit_button)
 	#remove_control_from_container(CONTAINER_CANVAS_EDITOR_MENU, add_button)
 	#remove_control_from_container(CONTAINER_CANVAS_EDITOR_MENU, remove_button)
+
+
+func _init_custom_types():
+	add_custom_type("TreeMap", "Node2D",\
+		preload("res://addons/new_folder/nodes/tree_map.gd"),\
+		preload("res://addons/new_folder/nodes/TreeMap.svg"))
+		#EditorInterface.get_editor_theme().get_icon("GraphEdit", "EditorIcons"))
+	add_custom_type("TreeMapNode", "Node2D",\
+		preload("res://addons/new_folder/nodes/tree_map_node.gd"),\
+		preload("res://addons/new_folder/nodes/TreeMapNode.svg"))
+		#EditorInterface.get_editor_theme().get_icon("GraphElement", "EditorIcons"))

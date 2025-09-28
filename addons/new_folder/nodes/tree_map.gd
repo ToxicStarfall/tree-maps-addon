@@ -50,23 +50,25 @@ func _setup():
 
 ## Apply inherited properties to children TreeMapNodes
 func setup_tree_map_node(node):
-	node.parent_line_color = line_color
-	node.line_color = node.property_get_revert("line_color")
+	# Before updating inherited properties, check if that property was actually inherited.
+	if node.line_color == node.parent_line_color:
+		node.parent_line_color = line_color
+		node.line_color = node.property_get_revert("line_color") # set to parent_line_color
+	else:
+		node.parent_line_color = line_color
+	#node.line_color = node.property_get_revert("line_color")
 	node.apply_properties()
-	#node.default_arrow_color = arrow_color
-	#node.line_color = line_color
-	#node.arrow_color = arrow_color
 
 
 func _enter_tree() -> void:
 	if Engine.is_editor_hint():
-		set_notify_transform(true)
+		#set_notify_transform(true)
 		set_physics_process(true)
 		EditorInterface.get_inspector().property_edited.connect( _on_property_edited )
 		EditorInterface.get_selection().selection_changed.connect( _on_selection_changed )
 		child_entered_tree.connect( _on_child_entered_tree )
 		child_exiting_tree.connect( _on_child_exiting_tree )
-		_setup()
+	_setup()
 
 
 func _exit_tree() -> void:
@@ -79,9 +81,9 @@ func _exit_tree() -> void:
 
 
 ## https://forum.godotengine.org/t/in-godot-how-can-i-listen-for-changes-in-the-properties-of-nodes-within-the-editor-additionally-how-can-this-be-used-in-a-plugin/35330/4
-func _notification(what):
-	if what == NOTIFICATION_TRANSFORM_CHANGED:
-		pass
+#func _notification(what):
+	#if what == NOTIFICATION_TRANSFORM_CHANGED:
+		#pass
 
 
 func _on_child_entered_tree(child: Node) -> void:
@@ -100,8 +102,8 @@ func _on_child_exiting_tree(child: Node) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if PluginState.viewport_2d_selected:
-		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+	#if viewport_2d_selected:
+		#if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			#print("ASKDM")
 			pass
 
@@ -110,26 +112,22 @@ func _physics_process(delta: float) -> void:
 func _on_property_edited(property) -> void:
 	if EditorInterface.get_inspector().get_edited_object() == self:
 		match property:
-			"line_color":
+			# Update childrens' properties
+			"line_color": #"node_color", ""
 				for i in get_children():
 					if i is TreeMapNode:
-						# Reapply default colors
 						setup_tree_map_node(i)
-						#i.internal_line_color =
 						i.apply_properties()
-						#i.queue_redraw()
-						#i.setup()
 
 
 func _on_selection_changed() -> void:
 	selected_nodes = EditorInterface.get_selection().get_transformable_selected_nodes()
+	var tree_map_nodes = get_tree_map_nodes_from(selected_nodes)
 
 	match edit_state:
 		EditStates.EDITING:
-			var tree_map_nodes = get_tree_map_nodes_from(selected_nodes)
 			# [Check for nodes to connect FROM] and [Check for nodes to connect TO]
 			if edited_nodes.size() >= 1 and tree_map_nodes.size() >= 1:
-				print("ASDK M")
 				for node in edited_nodes:
 					var target: TreeMapNode = tree_map_nodes[0]
 					# If [Node] does not have [Target] as a output (not connected).
@@ -146,25 +144,18 @@ func _on_selection_changed() -> void:
 					else: # Else, remove existing connection
 						disconnect_nodes([node], target)
 		EditStates.ADDING:
-			var tree_map_nodes = get_tree_map_nodes_from(selected_nodes)
-			print(tree_map_nodes)
 			if tree_map_nodes.is_empty():
-				#var new_node = TreeMapNode.new()
 				var new_node = create_tree_map_node()
-				#new_node.global_position = get_global_mouse_position()
-				#add_child(new_node)
-				#new_node.owner = EditorInterface.get_edited_scene_root()
-				#new_node.name = new_node.get_script().get_global_name()
-				EditorInterface.get_selection().clear()
-				EditorInterface.get_selection().add_node(new_node)
+				setup_tree_map_node(new_node)
+				select_node(new_node)
 				if chaining_enabled:
 					#connnect_nodes([node], target)
 					pass
 		EditStates.REMOVING:
-			var tree_map_nodes = get_tree_map_nodes_from(selected_nodes)
-			print(tree_map_nodes)
 			if !tree_map_nodes.is_empty():
-				remove_tree_map_node()
+				var target: TreeMapNode = tree_map_nodes[0]
+				select_node(target.get_parent())   # Reselect parent TreeMap to make removing nodes clean.
+				remove_tree_map_node(target).queue_free()
 
 
 func _on_node_moved(node):
@@ -181,18 +172,32 @@ func toggle_editing(state: bool):
 	if state == true:
 		# Add TreeMapNodes to editing selection
 		for i in EditorInterface.get_selection().get_transformable_selected_nodes():
-			if i is TreeMapNode: PluginState.selected_tree_map.edited_nodes.append(i)
+			if i is TreeMapNode: self.edited_nodes.append(i)
 		edit_state = TreeMap.EditStates.EDITING
 		EditorInterface.get_editor_toaster().push_toast("Editing enabled", EditorToaster.SEVERITY_INFO)
 	else:
-		PluginState.selected_tree_map.edited_nodes.clear()
+		edited_nodes.clear()
 		EditorInterface.get_editor_toaster().push_toast("Editing disabled", EditorToaster.SEVERITY_INFO)
 
 
+func toggle_adding(state: bool):
+	if state == true:
+		edit_state = TreeMap.EditStates.ADDING
+	else:
+		EditorInterface.get_editor_toaster().push_toast("Adding disabled", EditorToaster.SEVERITY_INFO)
+
+
+func toggle_removing(state: bool):
+	if state == true:
+		edit_state = TreeMap.EditStates.REMOVING
+		select_node(self)  # Select parent TreeMap to make removing nodes clean.
+	else:
+		EditorInterface.get_editor_toaster().push_toast("Removing disabled", EditorToaster.SEVERITY_INFO)
+
+
 func toggle_chaining():
-	var tree_map = PluginState.selected_tree_map
-	tree_map.chaining_enabled = !tree_map.chaining_enabled
-	if tree_map.chaining_enabled:
+	chaining_enabled = !chaining_enabled
+	if chaining_enabled:
 		EditorInterface.get_editor_toaster().push_toast("Chaining enabled", EditorToaster.SEVERITY_INFO)
 	else:
 		EditorInterface.get_editor_toaster().push_toast("Chaining disabled", EditorToaster.SEVERITY_INFO)
@@ -208,8 +213,17 @@ func create_tree_map_node() -> TreeMapNode:
 	return tree_map_node
 
 
-func remove_tree_map_node() -> TreeMapNode:
-	return
+func remove_tree_map_node(node) -> TreeMapNode:
+	var idx = node.get_index()
+	nodes.erase(node.position)
+	for i in node.inputs: # Remove idx from output connection lists
+		get_child(i).outputs.erase(idx)
+		get_child(i).queue_redraw()
+	for i in node.outputs: # Remove idx from input connection lists
+		get_child(i).inputs.erase(idx)
+		get_child(i).queue_redraw()
+	remove_child(node)
+	return node
 
 
 func connnect_nodes(connecting_nodes: Array[TreeMapNode], target_node: TreeMapNode):
@@ -225,10 +239,15 @@ func disconnect_nodes(connecting_nodes: Array[TreeMapNode], target_node: TreeMap
 
 
 func select_node(node):
-	pass
+	EditorInterface.get_selection().clear()
+	EditorInterface.get_selection().add_node(node)
+
 
 func select_nodes(nodes: Array):
-	pass
+	EditorInterface.get_selection().clear()
+	for node in nodes:
+		EditorInterface.get_selection().add_node(node)
+
 
 #func swap_node_connection(idx, old_array, new_array):
 	#old_array.erase(idx)

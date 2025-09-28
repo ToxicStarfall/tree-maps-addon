@@ -16,7 +16,7 @@ signal connections_edited
 
 @export_group("Overrides")
 # Defaults are overidden by TreeMap parent.
-# Default Properties
+# Default Properties - fallback if parent properties do not exist.
 var default_node_color = Color.WHITE
 var default_line_color = Color.WHITE
 var default_arrow_color = Color.WHITE
@@ -33,6 +33,7 @@ var internal_line_color = default_line_color
 
 
 func _setup():
+	print("setup")
 	# If no override property is specified, then use inherited property.
 	#if !node_color: default_node_color = node_color
 	if !line_color: internal_line_color = parent_line_color
@@ -105,9 +106,12 @@ func _on_property_edited(property: String):
 
 # Update properties
 func apply_properties():
-	print("updating properties")
-	if line_color == parent_line_color: internal_line_color = parent_line_color
-	else: internal_line_color = line_color
+	# If override property is equal to inherited property, update using inherited properties
+	if line_color == parent_line_color:
+		internal_line_color = parent_line_color
+	# Otherwise use override properties
+	else:
+		internal_line_color = line_color
 	queue_redraw()
 
 

@@ -1,0 +1,83 @@
+[gd_scene load_steps=5 format=3 uid="uid://ctluay8kkm6b8"]
+
+[ext_resource type="Script" uid="uid://d2m0hkeep073t" path="res://addons/new_folder/nodes/tree_map.gd" id="1_pml1y"]
+[ext_resource type="Script" uid="uid://cn4fi27bjgvjq" path="res://addons/new_folder/nodes/tree_map_node.gd" id="2_rkpsp"]
+
+[sub_resource type="Gradient" id="Gradient_e2u21"]
+
+[sub_resource type="Curve2D" id="Curve2D_nxiqb"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 155, 45, 21, -109, -21, 109, 281, 128, 0, 0, 0, 0, 486, 270, 0, 0, 0, 0, 669, 335)
+}
+point_count = 4
+
+[node name="Node" type="Node"]
+
+[node name="Line2D" type="Line2D" parent="."]
+visible = false
+position = Vector2(237, -27)
+points = PackedVector2Array(37, 29, 323, 91, 276, 286)
+gradient = SubResource("Gradient_e2u21")
+
+[node name="Path2D" type="Path2D" parent="."]
+visible = false
+position = Vector2(237, -27)
+curve = SubResource("Curve2D_nxiqb")
+
+[node name="TreeMap" type="Node2D" parent="."]
+script = ExtResource("1_pml1y")
+selected_nodes = Array[Node]([Object(Node2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(136, 128),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"script":ExtResource("2_rkpsp"),"outputs":Array[int]([0, 3]),"inputs":Array[int]([6]),"locked":false,"default_node_color":Color(1, 1, 1, 1),"default_line_color":Color(1, 1, 1, 1),"default_arrow_color":Color(1, 1, 1, 1),"default_arrow_texture":Resource("res://addons/new_folder/icons/arrow_filled.png"),"parent_line_color":Color(1, 0.02, 0.02, 1),"internal_line_color":Color(1, 1, 1, 1),"node_color":Color(1, 1, 1, 1),"line_color":Color(1, 1, 1, 1),"arrow_color":Color(1, 1, 1, 1),"arrow_texture":Resource("res://addons/new_folder/icons/arrow_filled.png"))
+])
+nodes = Array[Vector2]([Vector2(24, 96), Vector2(320, 136), Vector2(496, 192), Vector2(56, 264), Vector2(432, 0), Vector2(136, 128), Vector2(192, 8)])
+line_color = Color(1, 0.02, 0.02, 1)
+
+[node name="TreeMapNode" type="Node2D" parent="TreeMap"]
+position = Vector2(24, 96)
+script = ExtResource("2_rkpsp")
+inputs = Array[int]([5])
+line_color = Color(1, 0.02, 0.02, 1)
+metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
+
+[node name="TreeMapNode2" type="Node2D" parent="TreeMap"]
+position = Vector2(320, 136)
+script = ExtResource("2_rkpsp")
+outputs = Array[int]([4])
+inputs = Array[int]([3, 2, 6])
+line_color = Color(1, 0.02, 0.02, 1)
+metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
+
+[node name="TreeMapNode3" type="Node2D" parent="TreeMap"]
+position = Vector2(496, 192)
+script = ExtResource("2_rkpsp")
+outputs = Array[int]([1])
+inputs = Array[int]([4, 3])
+line_color = Color(1, 0.733333, 0, 1)
+metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
+
+[node name="TreeMapNode4" type="Node2D" parent="TreeMap"]
+position = Vector2(56, 264)
+script = ExtResource("2_rkpsp")
+outputs = Array[int]([1, 2])
+inputs = Array[int]([5])
+line_color = Color(1, 0.02, 0.02, 1)
+metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
+
+[node name="TreeMapNode5" type="Node2D" parent="TreeMap"]
+position = Vector2(432, 0)
+script = ExtResource("2_rkpsp")
+outputs = Array[int]([2])
+inputs = Array[int]([1, 6])
+line_color = Color(0, 0.333333, 1, 1)
+
+[node name="TreeMapNode6" type="Node2D" parent="TreeMap"]
+position = Vector2(136, 128)
+script = ExtResource("2_rkpsp")
+outputs = Array[int]([0, 3])
+inputs = Array[int]([6])
+line_color = Color(1, 1, 1, 1)
+
+[node name="TreeMapNode7" type="Node2D" parent="TreeMap"]
+position = Vector2(192, 8)
+script = ExtResource("2_rkpsp")
+outputs = Array[int]([4, 5, 1])
+line_color = Color(1, 1, 1, 1)

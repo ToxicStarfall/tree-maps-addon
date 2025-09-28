@@ -15,11 +15,6 @@ run/main_scene="uid://ctluay8kkm6b8"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://addons/new_folder/icon.svg"
 
-[autoload]
-
-PluginEvents="*res://addons/new_folder/plugin_events.gd"
-PluginState="*res://addons/new_folder/plugin_state.gd"
-
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/godot_super-wakatime/plugin.cfg", "res://addons/new_folder/plugin.cfg")

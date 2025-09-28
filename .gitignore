@@ -14,3 +14,7 @@ export_credentials.cfg
 .mono/
 data_*/
 mono_crash.*.json
+
+
+# Custom ignores
+addons/godot_super_wakatime/

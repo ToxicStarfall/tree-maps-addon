@@ -143,6 +143,7 @@ func _on_selection_changed() -> void:
 							target.queue_redraw()
 					else: # Else, remove existing connection
 						disconnect_nodes([node], target)
+					select_node(node)
 		EditStates.ADDING:
 			if tree_map_nodes.is_empty():
 				var new_node = create_tree_map_node()

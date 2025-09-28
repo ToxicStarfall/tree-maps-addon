@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hii138rirhow"
-path="res://.godot/imported/TileChecked.svg-e7b553efcde70e66c2d60a5a5e2b9504.ctex"
+uid="uid://c2li8il5nmute"
+path="res://.godot/imported/CurveCreate.svg-da7679e3286300768832b4d1d9a382e4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/new_folder/icons/editor/TileChecked.svg"
-dest_files=["res://.godot/imported/TileChecked.svg-e7b553efcde70e66c2d60a5a5e2b9504.ctex"]
+source_file="res://addons/tree_maps/icons/editor/CurveCreate.svg"
+dest_files=["res://.godot/imported/CurveCreate.svg-da7679e3286300768832b4d1d9a382e4.ctex"]
 
 [params]
 

@@ -13,11 +13,11 @@ config_version=5
 config/name="Tree Maps - Graphs and Skill Trees"
 run/main_scene="uid://ctluay8kkm6b8"
 config/features=PackedStringArray("4.4", "GL Compatibility")
-config/icon="res://addons/new_folder/icon.svg"
+config/icon="res://addons/tree_maps/icon.svg"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot_super-wakatime/plugin.cfg", "res://addons/new_folder/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot_super-wakatime/plugin.cfg", "res://addons/new_folder/plugin.cfg", "res://addons/tree_maps/plugin.cfg")
 
 [rendering]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d0c1okq1p4l81"
-path="res://.godot/imported/BoneMapperHandleSelected.svg-63e2ae40fbcac88457183e02c23daed2.ctex"
+uid="uid://d03crxes6h32y"
+path="res://.godot/imported/Lock.svg-96bf81c05bcc1db6af2ba18061f820ae.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/new_folder/icons/editor/BoneMapperHandleSelected.svg"
-dest_files=["res://.godot/imported/BoneMapperHandleSelected.svg-63e2ae40fbcac88457183e02c23daed2.ctex"]
+source_file="res://addons/tree_maps/icons/editor/Lock.svg"
+dest_files=["res://.godot/imported/Lock.svg-96bf81c05bcc1db6af2ba18061f820ae.ctex"]
 
 [params]
 

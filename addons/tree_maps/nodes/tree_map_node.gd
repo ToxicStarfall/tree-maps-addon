@@ -20,7 +20,7 @@ signal connections_edited
 var default_node_color = Color.WHITE
 var default_line_color = Color.WHITE
 var default_arrow_color = Color.WHITE
-var default_arrow_texture = preload("res://addons/new_folder/icons/arrow_filled.png")
+var default_arrow_texture = preload("res://addons/tree_maps/icons/arrow_filled.png")
 # Inherited TreeMap Properties
 var parent_line_color: Color
 # Internal Usage Properties
@@ -29,7 +29,7 @@ var internal_line_color = default_line_color
 @export var node_color: Color = Color.WHITE
 @export var line_color: Color = default_line_color
 @export var arrow_color: Color = Color.WHITE  ## Modulates default texture color
-@export var arrow_texture: Texture2D = preload("res://addons/new_folder/icons/arrow_filled.png")
+@export var arrow_texture: Texture2D = preload("res://addons/tree_maps/icons/arrow_filled.png")
 
 
 func _setup():

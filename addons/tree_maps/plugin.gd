@@ -4,7 +4,7 @@ extends EditorPlugin
 
 var tool_buttons = ButtonGroup.new()
 
-var editor_tool_button = preload("res://addons/new_folder/buttons/editor_tool_button.tscn")
+var editor_tool_button = preload("res://addons/tree_maps/buttons/editor_tool_button.tscn")
 var editor_tool_button_hbox = HBoxContainer.new()
 
 var edit_button: Button = editor_tool_button.instantiate()
@@ -24,7 +24,7 @@ var selected_tree_map
 #const AUTOLOAD_NAME = "PluginState"
 
 #func _enable_plugin():
-	#add_autoload_singleton(AUTOLOAD_NAME, "res://addons/new_folder/plugin_state.gd")
+	#add_autoload_singleton(AUTOLOAD_NAME, "res://addons/tree_maps/plugin_state.gd")
 
 
 #func _disable_plugin():
@@ -40,7 +40,7 @@ func _init() -> void:
 
 
 func _enter_tree():
-	#add_autoload_singleton("PluginState", "res://addons/new_folder/plugin_state.gd")
+	#add_autoload_singleton("PluginState", "res://addons/tree_maps/plugin_state.gd")
 	_add_tool_buttons()
 
 	EditorInterface.get_selection().selection_changed.connect( _on_selection_changed )
@@ -189,10 +189,10 @@ func _remove_tool_buttons():
 
 func _init_custom_types():
 	add_custom_type("TreeMap", "Node2D",\
-		preload("res://addons/new_folder/nodes/tree_map.gd"),\
-		preload("res://addons/new_folder/nodes/TreeMap.svg"))
+		preload("res://addons/tree_maps/nodes/tree_map.gd"),\
+		preload("res://addons/tree_maps/nodes/TreeMap.svg"))
 		#EditorInterface.get_editor_theme().get_icon("GraphEdit", "EditorIcons"))
 	add_custom_type("TreeMapNode", "Node2D",\
-		preload("res://addons/new_folder/nodes/tree_map_node.gd"),\
-		preload("res://addons/new_folder/nodes/TreeMapNode.svg"))
+		preload("res://addons/tree_maps/nodes/tree_map_node.gd"),\
+		preload("res://addons/tree_maps/nodes/TreeMapNode.svg"))
 		#EditorInterface.get_editor_theme().get_icon("GraphElement", "EditorIcons"))

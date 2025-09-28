@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cnulx1xe6rkgs"
-path="res://.godot/imported/Unlock.svg-b3f19cb500436212968afbbaab6cb222.ctex"
+uid="uid://hii138rirhow"
+path="res://.godot/imported/TileChecked.svg-72ec8b294b468d57b25125f13cea8157.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/new_folder/icons/editor/Unlock.svg"
-dest_files=["res://.godot/imported/Unlock.svg-b3f19cb500436212968afbbaab6cb222.ctex"]
+source_file="res://addons/tree_maps/icons/editor/TileChecked.svg"
+dest_files=["res://.godot/imported/TileChecked.svg-72ec8b294b468d57b25125f13cea8157.ctex"]
 
 [params]
 

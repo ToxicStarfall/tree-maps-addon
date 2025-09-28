@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://yy33ukacqxo0"
-path="res://.godot/imported/TileUnchecked.svg-59b8c9cfab14d8654cf724086e3a8ce4.ctex"
+uid="uid://kwhdwj61pjwr"
+path="res://.godot/imported/CurveEdit.svg-49256e74c35862776da13f974217cf9a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/new_folder/icons/editor/TileUnchecked.svg"
-dest_files=["res://.godot/imported/TileUnchecked.svg-59b8c9cfab14d8654cf724086e3a8ce4.ctex"]
+source_file="res://addons/tree_maps/icons/editor/CurveEdit.svg"
+dest_files=["res://.godot/imported/CurveEdit.svg-49256e74c35862776da13f974217cf9a.ctex"]
 
 [params]
 

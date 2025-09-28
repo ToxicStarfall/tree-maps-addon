@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pf8oexgghvpw"
-path="res://.godot/imported/arrow_filled.png-4ee7ddc1c6ae4ae23445386e7083a47d.ctex"
+uid="uid://dyn6parc3ur5i"
+path="res://.godot/imported/TreeMapNode.svg-6ab533c8c7893d9fda8c8b5a3ff3d05e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/new_folder/icons/arrow_filled.png"
-dest_files=["res://.godot/imported/arrow_filled.png-4ee7ddc1c6ae4ae23445386e7083a47d.ctex"]
+source_file="res://addons/tree_maps/nodes/TreeMapNode.svg"
+dest_files=["res://.godot/imported/TreeMapNode.svg-6ab533c8c7893d9fda8c8b5a3ff3d05e.ctex"]
 
 [params]
 
@@ -32,3 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

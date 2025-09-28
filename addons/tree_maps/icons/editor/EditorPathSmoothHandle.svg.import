@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://kwhdwj61pjwr"
-path="res://.godot/imported/CurveEdit.svg-ed86a718540eb2e1e37d672dffb4f075.ctex"
+uid="uid://cf6khdesbkgyr"
+path="res://.godot/imported/EditorPathSmoothHandle.svg-c1a9c7adae2b62efcff74ec615355894.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/new_folder/icons/editor/CurveEdit.svg"
-dest_files=["res://.godot/imported/CurveEdit.svg-ed86a718540eb2e1e37d672dffb4f075.ctex"]
+source_file="res://addons/tree_maps/icons/editor/EditorPathSmoothHandle.svg"
+dest_files=["res://.godot/imported/EditorPathSmoothHandle.svg-c1a9c7adae2b62efcff74ec615355894.ctex"]
 
 [params]
 

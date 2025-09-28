@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://ctluay8kkm6b8"]
 
-[ext_resource type="Script" uid="uid://d2m0hkeep073t" path="res://addons/new_folder/nodes/tree_map.gd" id="1_pml1y"]
-[ext_resource type="Script" uid="uid://cn4fi27bjgvjq" path="res://addons/new_folder/nodes/tree_map_node.gd" id="2_rkpsp"]
+[ext_resource type="Script" uid="uid://d2m0hkeep073t" path="res://addons/tree_maps/nodes/tree_map.gd" id="1_pml1y"]
+[ext_resource type="Script" uid="uid://cn4fi27bjgvjq" path="res://addons/tree_maps/nodes/tree_map_node.gd" id="2_rkpsp"]
 
 [sub_resource type="Gradient" id="Gradient_e2u21"]
 
@@ -26,7 +26,7 @@ curve = SubResource("Curve2D_nxiqb")
 
 [node name="TreeMap" type="Node2D" parent="."]
 script = ExtResource("1_pml1y")
-nodes = Array[Vector2]([Vector2(48, 16), Vector2(320, 136), Vector2(496, 192), Vector2(56, 264)])
+nodes = Array[Vector2]([Vector2(48, 16), Vector2(240, 88), Vector2(432, 216), Vector2(56, 264)])
 line_color = Color(1, 0.02, 0.02, 1)
 
 [node name="TreeMapNode" type="Node2D" parent="TreeMap"]

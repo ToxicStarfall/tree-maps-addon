@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bn217q4ua4td1"
-path="res://.godot/imported/TreeMap.svg-a81a6c5055806e83c86e19df9f3d891a.ctex"
+uid="uid://cy2fsjwjvrt88"
+path="res://.godot/imported/CurveDelete.svg-c0fcd6f1effd0b550b8dffe772a1ac21.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/new_folder/nodes/TreeMap.svg"
-dest_files=["res://.godot/imported/TreeMap.svg-a81a6c5055806e83c86e19df9f3d891a.ctex"]
+source_file="res://addons/tree_maps/icons/editor/CurveDelete.svg"
+dest_files=["res://.godot/imported/CurveDelete.svg-c0fcd6f1effd0b550b8dffe772a1ac21.ctex"]
 
 [params]
 

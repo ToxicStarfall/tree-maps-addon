@@ -7,9 +7,9 @@
 <p align="center">
 	Tree Maps provides useful nodes and functionality to help create graphical maps of tree-like node structures.
 </p>
+<img width="1027" height="428" alt="image" src="https://github.com/user-attachments/assets/33846207-1cb2-458d-8d88-33f94e250fa7" />
 
-<br/><br/>
-
+<br>
 <p align="center">
 	<a href="https://godotengine.org/asset-library/">Godot Asset Library</a> -
 	<a href="https://github.com/ToxicStarfall/skill-tree-addon/releases">Releases</a>

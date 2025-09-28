@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Skill Tree Addon"
+config/name="Tree Maps - Graphs and Skill Trees"
 run/main_scene="uid://ctluay8kkm6b8"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://addons/new_folder/icon.svg"

@@ -25,7 +25,7 @@
 There are two options to install this addon:
 <ol>
 	<li>Through the built-in AssetLib tab in Godot.</li>
-	<li>Manually download and put it in your project's "addons" folder.</li>
+	<li>Download the zip file manually, unpack it, and put it in your project's "addons" folder.</li>
 </ol>
 
 <br>

@@ -2,6 +2,7 @@
 class_name TreeMap
 extends Node2D
 
+
 signal notify_cleanup(node)
 
 enum EditStates { NONE, EDITING, ADDING, REMOVING }
@@ -16,13 +17,13 @@ enum EditStates { NONE, EDITING, ADDING, REMOVING }
 
 
 @export_category("Customization")
-#@export var node_instance: PackedScene
-#@export var min_length: int = 0
-#@export var max_length: int = 0
+@export var node_instance: PackedScene  ## (WIP) Specify a custom node type to use instead of the built-in TreeMapNode.
+@export var min_length: int = 0  ## (WIP) Prevent placement of nodes within this radius of other nodes.
+@export var max_length: int = 0  ## (WIP) Prevent placement of nodes outside this radius of other nodes.
 
-@export_group("Overrides")
 const default_color = Color.WHITE
-#@export_subgroup("Transform")
+const default_arrow_texture = preload("res://addons/tree_maps/icons/arrow_filled.png")
+#@export_subgroup("Transforms")
 
 @export_subgroup("Nodes")
 @export var node_color: Color = default_color
@@ -31,13 +32,15 @@ const default_color = Color.WHITE
 @export_subgroup("Lines")
 @export var line_color: Color = default_color
 #@export var line_border_color: Color
-#@export var line_texture: Texture2D
+@export var line_texture: Texture2D
 #@export var line_fill_texture: Texture2D
+#@export var line_thickness: float = 10.0
+
 
 @export_subgroup("Arrows")
 @export var arrow_color: Color = default_color
 #@export var arrow_border_color: Color
-#@export var arrow_texture: Texture2D
+@export var arrow_texture: Texture2D = default_arrow_texture
 
 
 func _setup():
@@ -50,13 +53,31 @@ func _setup():
 
 ## Apply inherited properties to children TreeMapNodes
 func setup_tree_map_node(node):
-	# Before updating inherited properties, check if that property was actually inherited.
-	if node.line_color == node.parent_line_color:
-		node.parent_line_color = line_color
-		node.line_color = node.property_get_revert("line_color") # set to parent_line_color
-	else:
-		node.parent_line_color = line_color
-	#node.line_color = node.property_get_revert("line_color")
+	var setup_properties = ["line_color", "node_color", "arrow_color", "arrow_texture"]
+	for property in setup_properties:
+		var parent_value = get(property)
+		var parent_property = "parent_" + property
+		# Before updating inherited properties, check if that property was actually inherited.
+		# If it was, use inheited value as the default revert value for that property.
+		if node.get(property) == node.get(parent_property):
+			node.set(parent_property, parent_value)
+			node.set(property, node.property_get_revert(property))
+		#
+		else:
+			node.set(parent_property, get(property))
+
+	## Before updating inherited properties, check if that property was actually inherited.
+	#if node.line_color == node.parent_line_color:
+		#node.parent_line_color = line_color
+		#node.line_color = node.property_get_revert("line_color") # set to parent_line_color
+	#else:
+		#node.parent_line_color = line_color
+
+	#if node.node_color == node.parent_node_color:
+		#node.parent_node_color = node_color
+		#node.node_color = node.property_get_revert("node_color")
+	#else:
+		#node.parent_node_color = node_color
 	node.apply_properties()
 
 
@@ -95,9 +116,9 @@ func _on_child_entered_tree(child: Node) -> void:
 
 func _on_child_exiting_tree(child: Node) -> void:
 	if child is TreeMapNode:
-		#notify_cleanup.emit()
 		child.moved.disconnect( _on_node_moved )
 		#child.connections_edited.disconnect( _on_node_connections_edited )
+		#notify_cleanup.emit()
 		# Adjust saved indexes for child items' connections
 
 
@@ -113,11 +134,11 @@ func _on_property_edited(property) -> void:
 	if EditorInterface.get_inspector().get_edited_object() == self:
 		match property:
 			# Update childrens' properties
-			"line_color": #"node_color", ""
+			"line_color", "node_color", "arrow_color", "arrow_texture":
 				for i in get_children():
 					if i is TreeMapNode:
 						setup_tree_map_node(i)
-						i.apply_properties()
+						#i.apply_properties()
 
 
 func _on_selection_changed() -> void:
@@ -136,27 +157,32 @@ func _on_selection_changed() -> void:
 						if not target.outputs.has(node.get_index()):
 							if not node == target:
 								connnect_nodes([node], target)
-						else: # Else, replace exusting connection
+						else:  # swap connection directions
 							node.swap_connection(target.get_index(), node.inputs, node.outputs)
 							target.swap_connection(node.get_index(), target.outputs, target.inputs)
 							node.queue_redraw()  # Refresh the origin node
 							target.queue_redraw()
-					else: # Else, remove existing connection
+					else:  # if existing connetion, remove connection
 						disconnect_nodes([node], target)
-					select_node(node)
+					if chaining_enabled:
+						edit_node(target)  # select targeted node if chaining is enabled.
+					else: select_node(node)  # select old node if chaining is disabled.
 		EditStates.ADDING:
-			if tree_map_nodes.is_empty():
+			# TODO: if TreeMap is selected, add nodes without connections
+			# TODO: Fix node not applyning inherited colors
+			if tree_map_nodes.is_empty():  # Empty spot selected
 				var new_node = create_tree_map_node()
 				setup_tree_map_node(new_node)
-				select_node(new_node)
+				#new_node.apply_properties()
 				if chaining_enabled:
-					#connnect_nodes([node], target)
-					pass
+					for node in edited_nodes:
+						connnect_nodes([node], new_node)
+					edit_node(new_node)  # select newly created node if chaining is enabled.
 		EditStates.REMOVING:
 			if !tree_map_nodes.is_empty():
-				var target: TreeMapNode = tree_map_nodes[0]
-				select_node(target.get_parent())   # Reselect parent TreeMap to make removing nodes clean.
-				remove_tree_map_node(target).queue_free()
+				for target in tree_map_nodes:  # Remove all selected nodes
+					select_node(target.get_parent())   # Reselect parent TreeMap to make removing nodes clean.
+					remove_tree_map_node(target).queue_free()
 
 
 func _on_node_moved(node):
@@ -171,7 +197,7 @@ func _on_node_moved(node):
 
 func toggle_editing(state: bool):
 	if state == true:
-		# Add TreeMapNodes to editing selection
+		# Add currently selected TreeMapNodes to editing selection
 		for i in EditorInterface.get_selection().get_transformable_selected_nodes():
 			if i is TreeMapNode: self.edited_nodes.append(i)
 		edit_state = TreeMap.EditStates.EDITING
@@ -183,6 +209,9 @@ func toggle_editing(state: bool):
 
 func toggle_adding(state: bool):
 	if state == true:
+		# Add currently selected TreeMapNodes to editing selection
+		for i in EditorInterface.get_selection().get_transformable_selected_nodes():
+			if i is TreeMapNode: self.edited_nodes.append(i)
 		edit_state = TreeMap.EditStates.ADDING
 	else:
 		EditorInterface.get_editor_toaster().push_toast("Adding disabled", EditorToaster.SEVERITY_INFO)
@@ -250,9 +279,17 @@ func select_nodes(nodes: Array):
 		EditorInterface.get_selection().add_node(node)
 
 
+func edit_node(node):
+	EditorInterface.get_selection().clear()
+	EditorInterface.get_selection().add_node(node)
+	edited_nodes.clear()
+	edited_nodes.append(node)
+
+
 #func swap_node_connection(idx, old_array, new_array):
 	#old_array.erase(idx)
 	#new_array.append(idx)
+
 
 func get_tree_map_nodes_from(array: Array[Node]) -> Array[TreeMapNode]:
 	var tree_map_nodes: Array[TreeMapNode] = []

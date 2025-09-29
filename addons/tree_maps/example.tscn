@@ -26,35 +26,61 @@ curve = SubResource("Curve2D_nxiqb")
 
 [node name="TreeMap" type="Node2D" parent="."]
 script = ExtResource("1_pml1y")
-nodes = Array[Vector2]([Vector2(48, 16), Vector2(240, 88), Vector2(432, 216), Vector2(56, 264)])
-line_color = Color(1, 0.02, 0.02, 1)
+nodes = Array[Vector2]([Vector2(0, 192), Vector2(192, 192), Vector2(384, 24), Vector2(192, 24), Vector2(496, 192), Vector2(632, 24), Vector2(192, 272), Vector2(400, 272)])
 
 [node name="TreeMapNode" type="Node2D" parent="TreeMap"]
-position = Vector2(48, 16)
+position = Vector2(0, 192)
 script = ExtResource("2_rkpsp")
 outputs = Array[int]([3])
-line_color = Color(1, 0.02, 0.02, 1)
+inputs = Array[int]([1])
+line_color = Color(1, 1, 1, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
 [node name="TreeMapNode2" type="Node2D" parent="TreeMap"]
-position = Vector2(240, 88)
+position = Vector2(192, 192)
 script = ExtResource("2_rkpsp")
+outputs = Array[int]([0])
 inputs = Array[int]([3, 2])
-line_color = Color(1, 0.02, 0.02, 1)
+line_color = Color(1, 0, 0, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
 [node name="TreeMapNode3" type="Node2D" parent="TreeMap"]
-position = Vector2(432, 216)
+position = Vector2(384, 24)
 script = ExtResource("2_rkpsp")
-outputs = Array[int]([1])
+outputs = Array[int]([1, 4])
 inputs = Array[int]([3])
-line_color = Color(1, 0.733333, 0, 1)
+line_color = Color(0.0833333, 1, 0, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
 [node name="TreeMapNode4" type="Node2D" parent="TreeMap"]
-position = Vector2(56, 264)
+position = Vector2(192, 24)
 script = ExtResource("2_rkpsp")
 outputs = Array[int]([1, 2])
 inputs = Array[int]([0])
-line_color = Color(1, 0.02, 0.02, 1)
+line_color = Color(1, 0.8, 0, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
+
+[node name="TreeMapNode5" type="Node2D" parent="TreeMap"]
+position = Vector2(496, 192)
+script = ExtResource("2_rkpsp")
+outputs = Array[int]([5])
+inputs = Array[int]([2])
+line_color = Color(0, 0.6, 1, 1)
+
+[node name="TreeMapNode6" type="Node2D" parent="TreeMap"]
+position = Vector2(632, 24)
+script = ExtResource("2_rkpsp")
+inputs = Array[int]([4])
+line_color = Color(1, 1, 1, 1)
+
+[node name="TreeMapNode7" type="Node2D" parent="TreeMap"]
+position = Vector2(192, 272)
+script = ExtResource("2_rkpsp")
+inputs = Array[int]([7])
+line_color = Color(1, 1, 1, 1)
+
+[node name="TreeMapNode8" type="Node2D" parent="TreeMap"]
+position = Vector2(400, 272)
+script = ExtResource("2_rkpsp")
+outputs = Array[int]([6])
+line_color = Color(1, 1, 1, 1)

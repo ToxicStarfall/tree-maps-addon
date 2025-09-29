@@ -20,16 +20,6 @@ var info_button: Button = Button.new()
 
 var selected_tree_map
 
-# Replace this value with a PascalCase autoload name, as per the GDScript style guide.
-#const AUTOLOAD_NAME = "PluginState"
-
-#func _enable_plugin():
-	#add_autoload_singleton(AUTOLOAD_NAME, "res://addons/tree_maps/plugin_state.gd")
-
-
-#func _disable_plugin():
-	#remove_autoload_singleton(AUTOLOAD_NAME)
-
 
 func _init() -> void:
 	tool_buttons.allow_unpress = true
@@ -92,7 +82,6 @@ func _on_selection_changed():
 
 
 func _handles(object: Object) -> bool:
-	#if ProjectSettings.get_setting("autoload/PluginState")
 	if object is TreeMap or object is TreeMapNode:
 		if object is TreeMapNode:
 			selected_tree_map = object.get_parent()
@@ -134,6 +123,8 @@ func _init_tool_buttons():
 	editor_tool_button_hbox.add_child(remove_button)
 	editor_tool_button_hbox.add_child(VSeparator.new())
 	editor_tool_button_hbox.add_child(chain_button)
+	editor_tool_button_hbox.add_child(lock_button)
+	editor_tool_button_hbox.add_child(VSeparator.new())
 	editor_tool_button_hbox.add_child(info_button)
 
 	edit_button.button_group = tool_buttons
@@ -156,6 +147,10 @@ func _init_tool_buttons():
 	chain_button.pressed.connect( func(): selected_tree_map.toggle_chaining() )
 	chain_button.tooltip_text = "Chaining"
 
+	lock_button.icon = EditorInterface.get_editor_theme().get_icon("Unlock", "EditorIcons")
+	#chain_button.pressed.connect( func(): selected_tree_map.toggle_chaining() )
+	lock_button.tooltip_text = "Lock"
+
 	info_button.icon = EditorInterface.get_editor_theme().get_icon("Info", "EditorIcons")
 	info_button.tooltip_text = "info"
 
@@ -175,16 +170,10 @@ func _on_tool_button_pressed(button):
 
 func _add_tool_buttons():
 	add_control_to_container(CONTAINER_CANVAS_EDITOR_MENU, editor_tool_button_hbox)
-	#add_control_to_container(CONTAINER_CANVAS_EDITOR_MENU, edit_button)
-	#add_control_to_container(CONTAINER_CANVAS_EDITOR_MENU, add_button)
-	#add_control_to_container(CONTAINER_CANVAS_EDITOR_MENU, remove_button)
 
 
 func _remove_tool_buttons():
 	remove_control_from_container(CONTAINER_CANVAS_EDITOR_MENU, editor_tool_button_hbox)
-	#remove_control_from_container(CONTAINER_CANVAS_EDITOR_MENU, edit_button)
-	#remove_control_from_container(CONTAINER_CANVAS_EDITOR_MENU, add_button)
-	#remove_control_from_container(CONTAINER_CANVAS_EDITOR_MENU, remove_button)
 
 
 func _init_custom_types():

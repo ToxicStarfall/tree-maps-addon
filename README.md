@@ -7,9 +7,9 @@
 <p align="center">
 	Tree Maps provides useful nodes and functionality to help create graphical maps of tree-like node structures.
 </p>
+<img width="1027" height="428" alt="image" src="https://github.com/user-attachments/assets/33846207-1cb2-458d-8d88-33f94e250fa7" />
 
-<br/><br/>
-
+<br>
 <p align="center">
 	<a href="https://godotengine.org/asset-library/">Godot Asset Library</a> -
 	<a href="https://github.com/ToxicStarfall/skill-tree-addon/releases">Releases</a>
@@ -25,7 +25,7 @@
 There are two options to install this addon:
 <ol>
 	<li>Through the built-in AssetLib tab in Godot.</li>
-	<li>Manually download and put it in your project's "addons" folder.</li>
+	<li>Download the zip file manually, unpack it, and put it in your project's "addons" folder.</li>
 </ol>
 
 <br>
@@ -73,13 +73,16 @@ Right click to disable active tool.
 - Chaining (WIP) - selects the targeted node after using a tool
 
 <h4>Miscellaneous</h4>
-Info (WIP)
+- Info (WIP)
 
-<br>
+
 _to be continued..._
+<br><br>
 
 **Demo video**
-[Video]()
+
+https://github.com/user-attachments/assets/fbfc2732-9639-446d-b620-4464e99fa997
+
 
 <br>
 <h3>Examples</h3>

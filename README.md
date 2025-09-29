@@ -65,6 +65,8 @@ showing some new tool buttons. These will allow you to edit your `TreeMapNode`(s
 
 
 <h3>Main Tools</h3>
+<img width="218" height="37" alt="tree-maps-tools" src="https://github.com/user-attachments/assets/48c3f2ca-9a48-40e8-ad83-9c43c4e791ad" />
+
 Right click to disable active tool.
 
 - **Edit Connections**:

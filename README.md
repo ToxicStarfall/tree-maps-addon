@@ -87,6 +87,8 @@ showing some new tool buttons. These will allow you to edit your `TreeMapNode`(s
 <a href="#main-tools">
 	<h3>Main Tools</h3>
 </a>
+<img width="218" height="37" alt="tree-maps-tools" src="https://github.com/user-attachments/assets/48c3f2ca-9a48-40e8-ad83-9c43c4e791ad" />
+
 <em>Tip: Right click to disable the active main tool.</em><br>
 
 > Note: When activating a tool, the currently selected node is your main node, from which tools

@@ -17,30 +17,37 @@ signal moved
 @export_category("Overrides")
 # Defaults are overidden by TreeMap parent.
 # Default Properties - fallback if parent properties do not exist.
-var default_node_color = Color.WHITE
-var default_line_color = Color.WHITE
-var default_arrow_color = Color.WHITE
-var default_arrow_texture = preload("res://addons/tree_maps/icons/arrow_filled.png")
+#var default_node_color = Color.WHITE
+#var default_line_color = Color.WHITE
+#var default_arrow_color = Color.WHITE
+#var default_arrow_texture = preload("res://addons/tree_maps/icons/arrow_filled.png")
+
 # Inherited TreeMap Properties
-var parent_line_color: Color
 var parent_node_color: Color
+var parent_line_color: Color
 var parent_arrow_color: Color
 var parent_arrow_texture: Texture2D
+	# Inheritance only
+var parent_node_size: float
+var parent_node_shape: String
+var parent_node_texture: Texture2D
+var parent_line_thickness: float
+var parent_line_texture: Texture2D
+
 # Internal Usage Properties
-#var internal_node_color = default_line_color
 #var internal_line_color = default_line_color
-#var internal_arrow_color = default_line_color
-#var internal_texture_color = default_line_color
 
 # Editable Override Properties
 @export_group("Nodes")
 @export var node_color: Color = Color.WHITE
 @export_group("Lines")
-@export var line_color: Color = default_line_color
-@export var line_thickness: float = 10.0
+@export var line_color: Color = Color.WHITE
+#@export var line_thickness: float = 10.0
 @export_group("Arrows")
 @export var arrow_color: Color = Color.WHITE  ## Modulates default texture color
 @export var arrow_texture: Texture2D = preload("res://addons/tree_maps/icons/arrow_filled.png")
+
+var override_properties = []
 
 
 func _setup():
@@ -75,7 +82,7 @@ func _draw_connection():
 	for i in outputs:
 		draw_set_transform(Vector2(0,0), 0)  # Reset drawing position
 		var target_pos = get_parent().get_child(i).global_position
-		draw_line(Vector2(0,0) , target_pos - self.global_position, line_color, 10)
+		draw_line(Vector2(0,0) , target_pos - self.global_position, line_color, parent_line_thickness)
 
 		var arrow_texture = arrow_texture
 		var arrow_pos = (target_pos - self.position) / 2  # Get half-way point between nodes
@@ -86,7 +93,12 @@ func _draw_connection():
 
 func _draw_node():
 	draw_set_transform(Vector2(0,0), 0)
-	draw_circle(Vector2(0,0), 12, node_color, true)
+	if parent_node_texture:
+		var texture_offset = -(parent_node_texture.get_size() / 2)
+		draw_texture(parent_node_texture, texture_offset, node_color)
+	else:
+		draw_circle(Vector2(0,0), parent_node_size / 2, node_color, true)
+	#draw_colored_polygon()
 
 
 func _notification(what) -> void:

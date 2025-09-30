@@ -12,13 +12,14 @@ var add_button: Button = editor_tool_button.instantiate()
 var remove_button: Button = editor_tool_button.instantiate()
 var chain_button: Button = editor_tool_button.instantiate()
 var lock_button: Button = Button.new()
+var reset_button: Button = Button.new()
 var info_button: Button = Button.new()
 #var tools = {
 	#add = editor_tool_button.instantiate(),
 	#remove = editor_tool_button.instantiate(),
 #}
 
-var selected_tree_map
+var selected_tree_map: TreeMap
 
 
 func _init() -> void:
@@ -116,6 +117,10 @@ func _forward_canvas_gui_input(event: InputEvent) -> bool:
 	return intercepted
 
 
+func editor_add_tool_buttons():
+	pass
+
+
 func _init_tool_buttons():
 	editor_tool_button_hbox.visible = false
 	editor_tool_button_hbox.add_child(edit_button)
@@ -125,6 +130,7 @@ func _init_tool_buttons():
 	editor_tool_button_hbox.add_child(chain_button)
 	editor_tool_button_hbox.add_child(lock_button)
 	editor_tool_button_hbox.add_child(VSeparator.new())
+	editor_tool_button_hbox.add_child(reset_button)
 	editor_tool_button_hbox.add_child(info_button)
 
 	edit_button.button_group = tool_buttons
@@ -150,6 +156,9 @@ func _init_tool_buttons():
 	lock_button.icon = EditorInterface.get_editor_theme().get_icon("Unlock", "EditorIcons")
 	#chain_button.pressed.connect( func(): selected_tree_map.toggle_chaining() )
 	lock_button.tooltip_text = "Lock"
+
+	reset_button.icon = EditorInterface.get_editor_theme().get_icon("RotateLeft", "EditorIcons")
+	reset_button.tooltip_text = "Reset"
 
 	info_button.icon = EditorInterface.get_editor_theme().get_icon("Info", "EditorIcons")
 	info_button.tooltip_text = "info"

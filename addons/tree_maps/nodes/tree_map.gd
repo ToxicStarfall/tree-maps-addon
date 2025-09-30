@@ -25,23 +25,34 @@ const default_color = Color.WHITE
 const default_arrow_texture = preload("res://addons/tree_maps/icons/arrow_filled.png")
 #@export_subgroup("Transforms")
 
-@export_subgroup("Nodes")
+@export_group("Nodes")
 @export var node_color: Color = default_color
-#@export var node_texture: Color
+@export var node_size: float = 24.0  ## TreeMap only for now
+@export_enum("Circle", "Square") var node_shape: String = "Circle"  ## (WIP) TreeMap only for now  Circle only.
+@export var node_texture: Texture2D  ## (WIP) TreeMap only for now  Overrides node shape.
 
-@export_subgroup("Lines")
+@export_group("Lines")
 @export var line_color: Color = default_color
+@export var line_thickness: float = 10.0  ## TreeMap only for now
+@export var line_texture: Texture2D  ## (WIP) TreeMap only for now
+@export_subgroup("Lines Extra")
 #@export var line_border_color: Color
-@export var line_texture: Texture2D
 #@export var line_fill_texture: Texture2D
-#@export var line_thickness: float = 10.0
+#@export_enum("Normal", "Dashed") var line_style
 
 
-@export_subgroup("Arrows")
+@export_group("Arrows")
 @export var arrow_color: Color = default_color
 #@export var arrow_border_color: Color
 @export var arrow_texture: Texture2D = default_arrow_texture
 
+# TODO:  Properties which are overriden will reset, if its the same as parent when editing parent's properties.
+
+var setup_properties = [
+		"node_color", "node_size", "node_texture", #"node_shape",
+		"line_color", "line_thickness",
+		"arrow_color", "arrow_texture"
+	]
 
 func _setup():
 	nodes.clear()
@@ -53,7 +64,6 @@ func _setup():
 
 ## Apply inherited properties to children TreeMapNodes
 func setup_tree_map_node(node):
-	var setup_properties = ["line_color", "node_color", "arrow_color", "arrow_texture"]
 	for property in setup_properties:
 		var parent_value = get(property)
 		var parent_property = "parent_" + property
@@ -132,9 +142,11 @@ func _physics_process(delta: float) -> void:
 # Refresh properties on children
 func _on_property_edited(property) -> void:
 	if EditorInterface.get_inspector().get_edited_object() == self:
-		match property:
+		#match property:
+			#"line_color", "node_color", "arrow_color", "arrow_texture":
+		for prop in setup_properties:
+			if property == prop:
 			# Update childrens' properties
-			"line_color", "node_color", "arrow_color", "arrow_texture":
 				for i in get_children():
 					if i is TreeMapNode:
 						setup_tree_map_node(i)

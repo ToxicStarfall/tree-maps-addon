@@ -11,8 +11,8 @@
 
 <br>
 <p align="center">
-	<a href="https://godotengine.org/asset-library/">Godot Asset Library</a> -
-	<a href="https://github.com/ToxicStarfall/skill-tree-addon/releases">Releases</a>
+	<a href="https://github.com/ToxicStarfall/skill-tree-addon/releases">Releases (more up to date)</a> - 
+	<a href="https://godotengine.org/asset-library/asset/4362">Godot Asset Library</a>
 </p>
 
 #

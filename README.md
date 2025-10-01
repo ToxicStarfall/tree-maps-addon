@@ -124,6 +124,10 @@ These tools change the way Main Tools behave.
 
 https://github.com/user-attachments/assets/fbfc2732-9639-446d-b620-4464e99fa997
 
+<img width="381" height="126" alt="tree-maps-example-2" src="https://github.com/user-attachments/assets/ab330c81-42a5-4f5b-bc32-5a264385f1d3" />
+<br>
+<img width="581" height="425" alt="tree-maps-example-3" src="https://github.com/user-attachments/assets/88cd6851-7516-44ab-858e-bdcbc8a53077" />
+
 
 <br>
 <h2>What's Next?</h2>

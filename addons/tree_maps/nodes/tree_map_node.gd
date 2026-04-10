@@ -49,6 +49,8 @@ var parent_line_texture: Texture2D
 
 var override_properties = []
 
+#var selected
+
 
 func _setup():
 	#print("setup")
@@ -64,23 +66,27 @@ func _setup():
 func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		set_notify_transform(true)
-		EditorInterface.get_inspector().property_edited.connect( _on_property_edited )
+		Engine.get_singleton("EditorInterface").get_inspector().property_edited.connect( _on_property_edited )
 	_setup()
 
 
 func _exit_tree() -> void:
 	if Engine.is_editor_hint():
-		EditorInterface.get_inspector().property_edited.disconnect( _on_property_edited )
+		Engine.get_singleton("EditorInterface").get_inspector().property_edited.disconnect( _on_property_edited )
 
 
-func _draw() -> void:
-	_draw_connection()
-	_draw_node()
+func _draw(update_selection_only: bool = false) -> void:
+	if update_selection_only:
+		_draw_selection()
+	else:
+		_draw_connection()
+		_draw_node()
 
 
 func _draw_connection():
 	for i in outputs:
 		draw_set_transform(Vector2(0,0), 0)  # Reset drawing position
+		# TODO - Check if target node is of the same tree map parent
 		var target_pos = get_parent().get_child(i).global_position
 		draw_line(Vector2(0,0) , target_pos - self.global_position, line_color, parent_line_thickness)
 
@@ -98,7 +104,18 @@ func _draw_node():
 		draw_texture(parent_node_texture, texture_offset, node_color)
 	else:
 		draw_circle(Vector2(0,0), parent_node_size / 2, node_color, true)
-	#draw_colored_polygon()
+		#draw_colored_polygon()
+
+
+## Draw the selection hightlight of this node.
+## (EDITOR ONLY)
+func _draw_selection():
+	if Engine.is_editor_hint():
+		#var editor_interface: EditorInterface = Engine.get_singleton("EditorInterface")
+		#if editor_interface.get_selection().get_selected_nodes().has(self):
+		if Engine.get_singleton("EditorInterface").get_selection().get_selected_nodes().has(self):
+			draw_circle(Vector2.ZERO, parent_node_size, Color("70bafa"), false, 4)
+
 
 
 func _notification(what) -> void:
@@ -127,7 +144,7 @@ func _property_get_revert(property: StringName) -> Variant:
 
 #
 func _on_property_edited(property: String):
-	if EditorInterface.get_inspector().get_edited_object() == self:
+	if Engine.get_singleton("EditorInterface").get_inspector().get_edited_object() == self:
 		match property:
 			"line_color", "node_color", "arrow_color", "arrow_texture":
 				apply_properties()

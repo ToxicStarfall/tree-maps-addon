@@ -13,7 +13,7 @@ enum EditStates { NONE, EDITING, ADDING, REMOVING }
 @export var selected_nodes: Array = []
 @export var edited_nodes: Array[TreeMapNode] = []
 
-@export var nodes: Array[Vector2] = []
+@export var nodes: Array[Vector2] = []  ## The nodes within this TreeMap.
 
 
 @export_category("Customization")
@@ -40,7 +40,6 @@ const default_arrow_texture = preload("res://addons/tree_maps/icons/arrow_filled
 #@export var line_fill_texture: Texture2D
 #@export_enum("Normal", "Dashed") var line_style
 
-
 @export_group("Arrows")
 @export var arrow_color: Color = default_color
 #@export var arrow_border_color: Color
@@ -53,6 +52,7 @@ var setup_properties = [
 		"line_color", "line_thickness",
 		"arrow_color", "arrow_texture"
 	]
+
 
 func _setup():
 	nodes.clear()
@@ -95,8 +95,8 @@ func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		#set_notify_transform(true)
 		set_physics_process(true)
-		EditorInterface.get_inspector().property_edited.connect( _on_property_edited )
-		EditorInterface.get_selection().selection_changed.connect( _on_selection_changed )
+		Engine.get_singleton("EditorInterface").get_inspector().property_edited.connect( _on_property_edited )
+		Engine.get_singleton("EditorInterface").get_selection().selection_changed.connect( _on_selection_changed )
 		child_entered_tree.connect( _on_child_entered_tree )
 		child_exiting_tree.connect( _on_child_exiting_tree )
 	_setup()
@@ -104,17 +104,27 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
 	if Engine.is_editor_hint():
-		EditorInterface.get_inspector().property_edited.disconnect( _on_property_edited )
-		EditorInterface.get_selection().selection_changed.disconnect( _on_selection_changed )
+		Engine.get_singleton("EditorInterface").get_inspector().property_edited.disconnect( _on_property_edited )
+		Engine.get_singleton("EditorInterface").get_selection().selection_changed.disconnect( _on_selection_changed )
 		child_entered_tree.disconnect( _on_child_entered_tree )
 		child_exiting_tree.disconnect( _on_child_exiting_tree )
 		nodes.clear()
 
 
+func _draw():
+	pass
+
 ## https://forum.godotengine.org/t/in-godot-how-can-i-listen-for-changes-in-the-properties-of-nodes-within-the-editor-additionally-how-can-this-be-used-in-a-plugin/35330/4
 #func _notification(what):
 	#if what == NOTIFICATION_TRANSFORM_CHANGED:
 		#pass
+
+
+func _physics_process(delta: float) -> void:
+	#if viewport_2d_selected:
+		#if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			#print("ASKDM")
+			pass
 
 
 func _on_child_entered_tree(child: Node) -> void:
@@ -132,16 +142,9 @@ func _on_child_exiting_tree(child: Node) -> void:
 		# Adjust saved indexes for child items' connections
 
 
-func _physics_process(delta: float) -> void:
-	#if viewport_2d_selected:
-		#if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-			#print("ASKDM")
-			pass
-
-
 # Refresh properties on children
 func _on_property_edited(property) -> void:
-	if EditorInterface.get_inspector().get_edited_object() == self:
+	if Engine.get_singleton("EditorInterface").get_inspector().get_edited_object() == self:
 		#match property:
 			#"line_color", "node_color", "arrow_color", "arrow_texture":
 		for prop in setup_properties:
@@ -154,7 +157,7 @@ func _on_property_edited(property) -> void:
 
 
 func _on_selection_changed() -> void:
-	selected_nodes = EditorInterface.get_selection().get_transformable_selected_nodes()
+	selected_nodes = Engine.get_singleton("EditorInterface").get_selection().get_transformable_selected_nodes()
 	var tree_map_nodes = get_tree_map_nodes_from(selected_nodes)
 
 	match edit_state:
@@ -163,8 +166,11 @@ func _on_selection_changed() -> void:
 			if edited_nodes.size() >= 1 and tree_map_nodes.size() >= 1:
 				for node in edited_nodes:
 					var target: TreeMapNode = tree_map_nodes[0]
-					# If [Node] does not have [Target] as a output (not connected).
-					if not node.has_connection(target.get_index(), node.outputs):
+					# If existing connetion, remove connection
+					if node.has_connection(target.get_index(), node.outputs):
+						disconnect_nodes([node], target)
+					# Else [Node] does not have [Target] as a output (not connected).
+					else:
 						# If [Target] does not have [Node] as a output
 						if not target.outputs.has(node.get_index()):
 							if not node == target:
@@ -172,13 +178,23 @@ func _on_selection_changed() -> void:
 						else:  # swap connection directions
 							node.swap_connection(target.get_index(), node.inputs, node.outputs)
 							target.swap_connection(node.get_index(), target.outputs, target.inputs)
-							node.queue_redraw()  # Refresh the origin node
-							target.queue_redraw()
-					else:  # if existing connetion, remove connection
-						disconnect_nodes([node], target)
+							node.queue_redraw()  # Refresh the origin node.
+							target.queue_redraw()  # Refresh the target node.
+					#if not node.has_connection(target.get_index(), node.outputs):
+						## If [Target] does not have [Node] as a output
+						#if not target.outputs.has(node.get_index()):
+							#if not node == target:
+								#connnect_nodes([node], target)
+						#else:  # swap connection directions
+							#node.swap_connection(target.get_index(), node.inputs, node.outputs)
+							#target.swap_connection(node.get_index(), target.outputs, target.inputs)
+							#node.queue_redraw()  # Refresh the origin node.
+							#target.queue_redraw()  # Refresh the target node.
+					#else:  # if existing connetion, remove connection
+						#disconnect_nodes([node], target)
 					if chaining_enabled:
 						edit_node(target)  # select targeted node if chaining is enabled.
-					else: select_node(node)  # select old node if chaining is disabled.
+					else: select_node(node)  # reselect origin node if chaining is disabled.
 		EditStates.ADDING:
 			# TODO: if TreeMap is selected, add nodes without connections
 			# TODO: Fix node not applyning inherited colors
@@ -210,23 +226,23 @@ func _on_node_moved(node):
 func toggle_editing(state: bool):
 	if state == true:
 		# Add currently selected TreeMapNodes to editing selection
-		for i in EditorInterface.get_selection().get_transformable_selected_nodes():
+		for i in Engine.get_singleton("EditorInterface").get_selection().get_transformable_selected_nodes():
 			if i is TreeMapNode: self.edited_nodes.append(i)
 		edit_state = TreeMap.EditStates.EDITING
-		EditorInterface.get_editor_toaster().push_toast("Editing enabled", EditorToaster.SEVERITY_INFO)
+		Engine.get_singleton("EditorInterface").get_editor_toaster().push_toast("Editing enabled", EditorToaster.SEVERITY_INFO)
 	else:
 		edited_nodes.clear()
-		EditorInterface.get_editor_toaster().push_toast("Editing disabled", EditorToaster.SEVERITY_INFO)
+		Engine.get_singleton("EditorInterface").get_editor_toaster().push_toast("Editing disabled", EditorToaster.SEVERITY_INFO)
 
 
 func toggle_adding(state: bool):
 	if state == true:
 		# Add currently selected TreeMapNodes to editing selection
-		for i in EditorInterface.get_selection().get_transformable_selected_nodes():
+		for i in Engine.get_singleton("EditorInterface").get_selection().get_transformable_selected_nodes():
 			if i is TreeMapNode: self.edited_nodes.append(i)
 		edit_state = TreeMap.EditStates.ADDING
 	else:
-		EditorInterface.get_editor_toaster().push_toast("Adding disabled", EditorToaster.SEVERITY_INFO)
+		Engine.get_singleton("EditorInterface").get_editor_toaster().push_toast("Adding disabled", EditorToaster.SEVERITY_INFO)
 
 
 func toggle_removing(state: bool):
@@ -234,22 +250,22 @@ func toggle_removing(state: bool):
 		edit_state = TreeMap.EditStates.REMOVING
 		select_node(self)  # Select parent TreeMap to make removing nodes clean.
 	else:
-		EditorInterface.get_editor_toaster().push_toast("Removing disabled", EditorToaster.SEVERITY_INFO)
+		Engine.get_singleton("EditorInterface").get_editor_toaster().push_toast("Removing disabled", EditorToaster.SEVERITY_INFO)
 
 
 func toggle_chaining():
 	chaining_enabled = !chaining_enabled
 	if chaining_enabled:
-		EditorInterface.get_editor_toaster().push_toast("Chaining enabled", EditorToaster.SEVERITY_INFO)
+		Engine.get_singleton("EditorInterface").get_editor_toaster().push_toast("Chaining enabled", EditorToaster.SEVERITY_INFO)
 	else:
-		EditorInterface.get_editor_toaster().push_toast("Chaining disabled", EditorToaster.SEVERITY_INFO)
+		Engine.get_singleton("EditorInterface").get_editor_toaster().push_toast("Chaining disabled", EditorToaster.SEVERITY_INFO)
 
 
 func create_tree_map_node() -> TreeMapNode:
 	var tree_map_node = TreeMapNode.new()
 	add_child(tree_map_node)
 	tree_map_node.global_position = get_global_mouse_position()
-	tree_map_node.owner = EditorInterface.get_edited_scene_root()
+	tree_map_node.owner = Engine.get_singleton("EditorInterface").get_edited_scene_root()
 	tree_map_node.name = tree_map_node.get_script().get_global_name()
 	nodes.append(tree_map_node.position)
 	return tree_map_node
@@ -281,19 +297,19 @@ func disconnect_nodes(connecting_nodes: Array[TreeMapNode], target_node: TreeMap
 
 
 func select_node(node):
-	EditorInterface.get_selection().clear()
-	EditorInterface.get_selection().add_node(node)
+	Engine.get_singleton("EditorInterface").get_selection().clear()
+	Engine.get_singleton("EditorInterface").get_selection().add_node(node)
 
 
 func select_nodes(nodes: Array):
-	EditorInterface.get_selection().clear()
+	Engine.get_singleton("EditorInterface").get_selection().clear()
 	for node in nodes:
-		EditorInterface.get_selection().add_node(node)
+		Engine.get_singleton("EditorInterface").get_selection().add_node(node)
 
 
 func edit_node(node):
-	EditorInterface.get_selection().clear()
-	EditorInterface.get_selection().add_node(node)
+	Engine.get_singleton("EditorInterface").get_selection().clear()
+	Engine.get_singleton("EditorInterface").get_selection().add_node(node)
 	edited_nodes.clear()
 	edited_nodes.append(node)
 
@@ -313,7 +329,7 @@ func get_tree_map_nodes_from(array: Array[Node]) -> Array[TreeMapNode]:
 
 func get_last_selected_node() -> TreeMapNode:
 	var last_selection
-	var selected_nodes = EditorInterface.get_selection().get_transformable_selected_nodes()
+	var selected_nodes = Engine.get_singleton("EditorInterface").get_selection().get_transformable_selected_nodes()
 	for i in selected_nodes.size():
 		last_selection = selected_nodes[-i-1]
 		if last_selection is TreeMapNode:

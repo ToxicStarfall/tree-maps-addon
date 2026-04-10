@@ -8,7 +8,9 @@
 
 [node name="TreeMap" type="Node2D" parent="."]
 script = ExtResource("1_pml1y")
-nodes = Array[Vector2]([Vector2(0, 192), Vector2(192, 192), Vector2(384, 24), Vector2(200, 24), Vector2(496, 192), Vector2(632, 24), Vector2(192, 272), Vector2(400, 272)])
+selected_nodes = Array[Node]([Object(Node2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(384, 24),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"script":ExtResource("2_rkpsp"),"outputs":Array[int]([1, 4]),"inputs":Array[int]([3, 0]),"locked":false,"parent_node_color":Color(1, 1, 1, 1),"parent_line_color":Color(1, 1, 1, 1),"parent_arrow_color":Color(1, 1, 1, 1),"parent_arrow_texture":Resource("res://addons/tree_maps/icons/arrow_filled.png"),"parent_node_size":24.0,"parent_node_shape":"","parent_node_texture":null,"parent_line_thickness":10.0,"parent_line_texture":null,"node_color":Color(1, 1, 1, 1),"line_color":Color(0.0833333, 1, 0, 1),"arrow_color":Color(1, 1, 1, 1),"arrow_texture":Resource("res://addons/tree_maps/icons/arrow_filled.png"),"override_properties":[],"metadata/_custom_type_script":"uid://cn4fi27bjgvjq")
+])
+nodes = Array[Vector2]([Vector2(0, 192), Vector2(192, 192), Vector2(384, 24), Vector2(192, 24), Vector2(496, 192), Vector2(632, 24), Vector2(192, 272), Vector2(400, 272)])
 
 [node name="TreeMapNode" type="Node2D" parent="TreeMap"]
 position = Vector2(0, 192)
@@ -29,7 +31,7 @@ metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 position = Vector2(384, 24)
 script = ExtResource("2_rkpsp")
 outputs = Array[int]([1, 4])
-inputs = Array[int]([3])
+inputs = Array[int]([3, 0])
 line_color = Color(0.0833333, 1, 0, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
@@ -67,3 +69,24 @@ node_color = Color(1, 0, 1, 1)
 line_color = Color(0, 0.533333, 1, 1)
 arrow_color = Color(1, 0, 0, 1)
 arrow_texture = ExtResource("3_b1hr1")
+
+[node name="TreeMap2" type="Node2D" parent="." node_paths=PackedStringArray("edited_nodes")]
+script = ExtResource("1_pml1y")
+edit_state = 1
+chaining_enabled = true
+selected_nodes = Array[Node]([Object(Node2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":0,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"physics_interpolation_mode":0,"auto_translate_mode":0,"editor_description":"","visible":true,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":null,"use_parent_material":false,"position":Vector2(384, 24),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"script":ExtResource("2_rkpsp"),"outputs":Array[int]([1, 4]),"inputs":Array[int]([3, 0]),"locked":false,"parent_node_color":Color(1, 1, 1, 1),"parent_line_color":Color(1, 1, 1, 1),"parent_arrow_color":Color(1, 1, 1, 1),"parent_arrow_texture":Resource("res://addons/tree_maps/icons/arrow_filled.png"),"parent_node_size":24.0,"parent_node_shape":"","parent_node_texture":null,"parent_line_thickness":10.0,"parent_line_texture":null,"node_color":Color(1, 1, 1, 1),"line_color":Color(0.0833333, 1, 0, 1),"arrow_color":Color(1, 1, 1, 1),"arrow_texture":Resource("res://addons/tree_maps/icons/arrow_filled.png"),"override_properties":[],"metadata/_custom_type_script":"uid://cn4fi27bjgvjq")
+])
+edited_nodes = [NodePath("../TreeMap/TreeMapNode3")]
+nodes = Array[Vector2]([Vector2(144, -168), Vector2(336, -160)])
+metadata/_custom_type_script = "uid://d2m0hkeep073t"
+
+[node name="TreeMapNode" type="Node2D" parent="TreeMap2"]
+position = Vector2(144, -168)
+script = ExtResource("2_rkpsp")
+outputs = Array[int]([2])
+inputs = Array[int]([1])
+
+[node name="TreeMapNode2" type="Node2D" parent="TreeMap2"]
+position = Vector2(336, -160)
+script = ExtResource("2_rkpsp")
+outputs = Array[int]([0])

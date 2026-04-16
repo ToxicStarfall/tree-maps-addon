@@ -76,11 +76,13 @@ func _exit_tree() -> void:
 
 
 func _draw(update_selection_only: bool = false) -> void:
-	if update_selection_only:
+	#if update_selection_only:
+	if Engine.get_singleton("EditorInterface").get_selection().get_selected_nodes().has(self):
 		_draw_selection()
-	else:
-		_draw_connection()
-		_draw_node()
+		print("ASD")
+	#else:
+	_draw_connection()
+	_draw_node()
 
 
 func _draw_connection():
@@ -110,10 +112,10 @@ func _draw_node():
 ## Draw the selection hightlight of this node.
 ## (EDITOR ONLY)
 func _draw_selection():
-	if Engine.is_editor_hint():
+	#if Engine.is_editor_hint():
 		#var editor_interface: EditorInterface = Engine.get_singleton("EditorInterface")
 		#if editor_interface.get_selection().get_selected_nodes().has(self):
-		if Engine.get_singleton("EditorInterface").get_selection().get_selected_nodes().has(self):
+		#if Engine.get_singleton("EditorInterface").get_selection().get_selected_nodes().has(self):
 			draw_circle(Vector2.ZERO, parent_node_size, Color("70bafa"), false, 4)
 
 
@@ -184,10 +186,11 @@ func swap_connection(idx, old_array, new_array):
 	new_array.append(idx)
 
 
-# Returns true/false if the Input/Output array has int value of "idx"
+## Returns true/false if the Input/Output array has int value of "idx"
 func has_connection(idx: int, connection_array: Array[int]):
 	return connection_array.has(idx)
 
 
+##
 func extend():
 	pass

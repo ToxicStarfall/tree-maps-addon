@@ -3,6 +3,7 @@ class_name TreeMap
 extends Node2D
 
 
+signal selection_changed
 signal notify_cleanup(node)
 
 enum EditStates { NONE, EDITING, ADDING, REMOVING }
@@ -10,7 +11,7 @@ enum EditStates { NONE, EDITING, ADDING, REMOVING }
 @export var edit_state: EditStates = EditStates.NONE
 @export var chaining_enabled: bool = false
 
-@export var selected_nodes: Array = []
+@export var selected_nodes: Array[Node] = []
 @export var edited_nodes: Array[TreeMapNode] = []
 
 @export var nodes: Array[Vector2] = []  ## The nodes within this TreeMap.
@@ -95,24 +96,30 @@ func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		#set_notify_transform(true)
 		set_physics_process(true)
-		Engine.get_singleton("EditorInterface").get_inspector().property_edited.connect( _on_property_edited )
-		Engine.get_singleton("EditorInterface").get_selection().selection_changed.connect( _on_selection_changed )
+		#Engine.get_singleton("EditorInterface").get_inspector().property_edited.connect( _on_property_edited )
+		#Engine.get_singleton("EditorInterface").get_selection().selection_changed.connect( _on_selection_changed )
 		child_entered_tree.connect( _on_child_entered_tree )
 		child_exiting_tree.connect( _on_child_exiting_tree )
+		selection_changed.connect( _on_selection_changed )
 	_setup()
 
 
 func _exit_tree() -> void:
 	if Engine.is_editor_hint():
-		Engine.get_singleton("EditorInterface").get_inspector().property_edited.disconnect( _on_property_edited )
-		Engine.get_singleton("EditorInterface").get_selection().selection_changed.disconnect( _on_selection_changed )
+		#Engine.get_singleton("EditorInterface").get_inspector().property_edited.disconnect( _on_property_edited )
+		#Engine.get_singleton("EditorInterface").get_selection().selection_changed.disconnect( _on_selection_changed )
 		child_entered_tree.disconnect( _on_child_entered_tree )
 		child_exiting_tree.disconnect( _on_child_exiting_tree )
+		selection_changed.disconnect( _on_selection_changed )
 		nodes.clear()
 
 
 func _draw():
-	pass
+	#for idx in selected_nodes.size():
+	if selected_nodes.has(self):
+		selected_nodes = get_tree_map_nodes()
+	for node in selected_nodes:
+		draw_circle(node.global_position, node.parent_node_size, Color("70bafa"), false, 4)
 
 ## https://forum.godotengine.org/t/in-godot-how-can-i-listen-for-changes-in-the-properties-of-nodes-within-the-editor-additionally-how-can-this-be-used-in-a-plugin/35330/4
 #func _notification(what):
@@ -158,6 +165,7 @@ func _on_property_edited(property) -> void:
 
 func _on_selection_changed() -> void:
 	selected_nodes = Engine.get_singleton("EditorInterface").get_selection().get_transformable_selected_nodes()
+	queue_redraw()
 	var tree_map_nodes = get_tree_map_nodes_from(selected_nodes)
 
 	match edit_state:
@@ -180,18 +188,7 @@ func _on_selection_changed() -> void:
 							target.swap_connection(node.get_index(), target.outputs, target.inputs)
 							node.queue_redraw()  # Refresh the origin node.
 							target.queue_redraw()  # Refresh the target node.
-					#if not node.has_connection(target.get_index(), node.outputs):
-						## If [Target] does not have [Node] as a output
-						#if not target.outputs.has(node.get_index()):
-							#if not node == target:
-								#connnect_nodes([node], target)
-						#else:  # swap connection directions
-							#node.swap_connection(target.get_index(), node.inputs, node.outputs)
-							#target.swap_connection(node.get_index(), target.outputs, target.inputs)
-							#node.queue_redraw()  # Refresh the origin node.
-							#target.queue_redraw()  # Refresh the target node.
-					#else:  # if existing connetion, remove connection
-						#disconnect_nodes([node], target)
+
 					if chaining_enabled:
 						edit_node(target)  # select targeted node if chaining is enabled.
 					else: select_node(node)  # reselect origin node if chaining is disabled.
@@ -290,10 +287,11 @@ func connnect_nodes(connecting_nodes: Array[TreeMapNode], target_node: TreeMapNo
 		target_node.add_connection(connecting_node.get_index(), target_node.inputs)
 
 
-func disconnect_nodes(connecting_nodes: Array[TreeMapNode], target_node: TreeMapNode):
-	for connecting_node in connecting_nodes:
-		connecting_node.remove_connection(target_node.get_index(), connecting_node.outputs)
-		target_node.remove_connection(connecting_node.get_index(), target_node.inputs)
+## Disconnects all of the specified nodes from the target node.
+func disconnect_nodes(disconnecting_nodes: Array[TreeMapNode], target_node: TreeMapNode):
+	for disconnecting_node in disconnecting_nodes:
+		disconnecting_node.remove_connection(target_node.get_index(), disconnecting_node.outputs)
+		target_node.remove_connection(disconnecting_node.get_index(), target_node.inputs)
 
 
 func select_node(node):
@@ -319,6 +317,15 @@ func edit_node(node):
 	#new_array.append(idx)
 
 
+## Returns the child TreeMapNode at index idx.
+func get_tree_map_node(idx: int) -> TreeMapNode:
+	return get_child(idx)
+
+## Returns all TreeMapNode children belonging to this TreeMap.
+func get_tree_map_nodes() -> Array[Node]:
+	return Array( get_children().map( func(node): if node is TreeMapNode: return node ), TYPE_OBJECT, "Node", null )
+
+## Returns an array of all [TreeMapNodes] in [array]
 func get_tree_map_nodes_from(array: Array[Node]) -> Array[TreeMapNode]:
 	var tree_map_nodes: Array[TreeMapNode] = []
 	for node in array:

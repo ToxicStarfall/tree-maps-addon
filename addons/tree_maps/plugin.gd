@@ -81,22 +81,27 @@ func _on_selection_changed():
 		if node is TreeMap or node is TreeMapNode:
 			show = true
 			break
-
-	#if node is TreeMap:
-		#pass
-	#elif node is TreeMapNode:
-		#pass
-	selected_tree_map.selection_changed.emit()
 	editor_tool_button_hbox.visible = show
 
+	# Clear last selected TreeMap before updating TreeMap selection.
+	if selected_tree_map:
+		selected_tree_map.selected_nodes.clear()
+		selected_tree_map.selection_changed.emit()
 
-## Built-in
-func _handles(object: Object) -> bool:
-	if object is TreeMap or object is TreeMapNode:
-		if object is TreeMapNode:
-			selected_tree_map = object.get_parent()
-		elif object is TreeMap:
-			selected_tree_map = object
+	# Search for first TreeMap in selection.
+	for node in selection:
+		if node is TreeMap or node is TreeMapNode:
+			if node is TreeMapNode:
+				selected_tree_map = node.get_parent()
+				break
+			elif node is TreeMap:
+				selected_tree_map = node
+				break
+
+	if selected_tree_map:
+		# Apply new selection to the first selected TreeMap and send selection signal.
+		selected_tree_map.selected_nodes = selection
+		selected_tree_map.selection_changed.emit()
 
 		# Update tool buttons display to match the selected TreeMap's editing state
 		if selected_tree_map.edit_state != TreeMap.EditStates.NONE:
@@ -104,8 +109,32 @@ func _handles(object: Object) -> bool:
 		else:
 			for b in tool_buttons.get_buttons():
 				b.button_pressed = false
-
 		chain_button.button_pressed = selected_tree_map.chaining_enabled
+
+
+
+## Built-in
+func _handles(object: Object) -> bool:
+	if object is TreeMap or object is TreeMapNode:
+		#var temp = selected_tree_map
+		#if object is TreeMapNode:
+			#selected_tree_map = object.get_parent()
+		#elif object is TreeMap:
+			#selected_tree_map = object
+
+		#if selected_tree_map != temp:
+			#print("FAD - ", temp)
+			##temp.selected_nodes.clear()
+			#temp.selection_changed.emit()
+
+		#$ Update tool buttons display to match the selected TreeMap's editing state
+		#if selected_tree_map.edit_state != TreeMap.EditStates.NONE:
+			#tool_buttons.get_buttons()[max(selected_tree_map.edit_state - 1, 0)].button_pressed = true
+		#else:
+			#for b in tool_buttons.get_buttons():
+				#b.button_pressed = false
+#
+		#chain_button.button_pressed = selected_tree_map.chaining_enabled
 		return true
 	else:
 		return false
@@ -119,15 +148,14 @@ func _forward_canvas_gui_input(event: InputEvent) -> bool:
 			pass
 		# Intercept Right Mouse to clear editing mode and any selected nodes ONLY if currently editing.
 		if event.button_index == MOUSE_BUTTON_RIGHT:
+			#print("mouse right intercepted")
 			# Disable editing on the selected [TreeMap] on Mouse Right Click
 			if selected_tree_map.edit_state != TreeMap.EditStates.NONE:
 				selected_tree_map.edit_state = TreeMap.EditStates.NONE
-				#selected_tree_map.edited_nodes.map( func(node): node.queue_redraw() )
 				selected_tree_map.edited_nodes.clear()
 				tool_buttons.get_pressed_button().button_pressed = false
 				Engine.get_singleton("EditorInterface").get_editor_toaster().push_toast("Editing disabled", EditorToaster.SEVERITY_INFO)
 				intercepted = true
-			#print("mouse right intercepted")
 	return intercepted
 
 

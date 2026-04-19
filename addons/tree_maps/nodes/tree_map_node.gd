@@ -75,12 +75,7 @@ func _exit_tree() -> void:
 		Engine.get_singleton("EditorInterface").get_inspector().property_edited.disconnect( _on_property_edited )
 
 
-func _draw(update_selection_only: bool = false) -> void:
-	#if update_selection_only:
-	if Engine.get_singleton("EditorInterface").get_selection().get_selected_nodes().has(self):
-		_draw_selection()
-		print("ASD")
-	#else:
+func _draw() -> void:
 	_draw_connection()
 	_draw_node()
 
@@ -107,17 +102,6 @@ func _draw_node():
 	else:
 		draw_circle(Vector2(0,0), parent_node_size / 2, node_color, true)
 		#draw_colored_polygon()
-
-
-## Draw the selection hightlight of this node.
-## (EDITOR ONLY)
-func _draw_selection():
-	#if Engine.is_editor_hint():
-		#var editor_interface: EditorInterface = Engine.get_singleton("EditorInterface")
-		#if editor_interface.get_selection().get_selected_nodes().has(self):
-		#if Engine.get_singleton("EditorInterface").get_selection().get_selected_nodes().has(self):
-			draw_circle(Vector2.ZERO, parent_node_size, Color("70bafa"), false, 4)
-
 
 
 func _notification(what) -> void:

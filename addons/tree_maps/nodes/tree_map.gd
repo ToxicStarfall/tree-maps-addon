@@ -115,7 +115,7 @@ func _exit_tree() -> void:
 
 
 func _draw():
-	#for idx in selected_nodes.size():
+	# Highlight all children node if TreeMap is selected.
 	if selected_nodes.has(self):
 		selected_nodes = get_tree_map_nodes()
 	for node in selected_nodes:
@@ -164,9 +164,9 @@ func _on_property_edited(property) -> void:
 
 
 func _on_selection_changed() -> void:
-	selected_nodes = Engine.get_singleton("EditorInterface").get_selection().get_transformable_selected_nodes()
-	queue_redraw()
+	#selected_nodes = Engine.get_singleton("EditorInterface").get_selection().get_transformable_selected_nodes()
 	var tree_map_nodes = get_tree_map_nodes_from(selected_nodes)
+	queue_redraw()
 
 	match edit_state:
 		EditStates.EDITING:

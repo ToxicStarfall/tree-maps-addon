@@ -1,66 +1,65 @@
-[gd_scene load_steps=4 format=3 uid="uid://c13uwb1wlegxr"]
+[gd_scene format=3 uid="uid://c13uwb1wlegxr"]
 
 [ext_resource type="Script" uid="uid://d2m0hkeep073t" path="res://addons/tree_maps/nodes/tree_map.gd" id="1_jwvn6"]
 [ext_resource type="Script" uid="uid://cn4fi27bjgvjq" path="res://addons/tree_maps/nodes/tree_map_node.gd" id="2_ccixg"]
 [ext_resource type="Texture2D" uid="uid://bxh7dktvo38v3" path="res://addons/tree_maps/icons/arrow.png" id="3_77xbf"]
 
-[node name="Node" type="Node"]
+[node name="Node" type="Node" unique_id=1113942159]
 
-[node name="TreeMap" type="Node2D" parent="."]
+[node name="TreeMap" type="Node2D" parent="." unique_id=2122192343]
 script = ExtResource("1_jwvn6")
-nodes = Array[Vector2]([Vector2(0, 192), Vector2(192, 192), Vector2(384, 24), Vector2(192, 24), Vector2(496, 192), Vector2(632, 24), Vector2(192, 272), Vector2(400, 272)])
 
-[node name="TreeMapNode" type="Node2D" parent="TreeMap"]
-position = Vector2(0, 192)
+[node name="TreeMapNode" type="Node2D" parent="TreeMap" unique_id=1060341477]
+position = Vector2(112, 528)
 script = ExtResource("2_ccixg")
 outputs = Array[int]([3])
 inputs = Array[int]([1])
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
-[node name="TreeMapNode2" type="Node2D" parent="TreeMap"]
-position = Vector2(192, 192)
+[node name="TreeMapNode2" type="Node2D" parent="TreeMap" unique_id=1361318114]
+position = Vector2(304, 528)
 script = ExtResource("2_ccixg")
 outputs = Array[int]([0])
 inputs = Array[int]([2, 3])
 line_color = Color(1, 0, 0, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
-[node name="TreeMapNode3" type="Node2D" parent="TreeMap"]
-position = Vector2(384, 24)
+[node name="TreeMapNode3" type="Node2D" parent="TreeMap" unique_id=268349143]
+position = Vector2(496, 360)
 script = ExtResource("2_ccixg")
 outputs = Array[int]([1, 4])
 inputs = Array[int]([0, 3])
 line_color = Color(0.0833333, 1, 0, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
-[node name="TreeMapNode4" type="Node2D" parent="TreeMap"]
-position = Vector2(192, 24)
+[node name="TreeMapNode4" type="Node2D" parent="TreeMap" unique_id=1031428637]
+position = Vector2(304, 360)
 script = ExtResource("2_ccixg")
 outputs = Array[int]([1, 2])
 inputs = Array[int]([0])
 line_color = Color(1, 0.8, 0, 1)
 metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
 
-[node name="TreeMapNode5" type="Node2D" parent="TreeMap"]
-position = Vector2(496, 192)
+[node name="TreeMapNode5" type="Node2D" parent="TreeMap" unique_id=1659441255]
+position = Vector2(608, 528)
 script = ExtResource("2_ccixg")
 outputs = Array[int]([5])
 inputs = Array[int]([2])
 line_color = Color(0, 0.6, 1, 1)
 
-[node name="TreeMapNode6" type="Node2D" parent="TreeMap"]
-position = Vector2(632, 24)
+[node name="TreeMapNode6" type="Node2D" parent="TreeMap" unique_id=538447230]
+position = Vector2(744, 360)
 script = ExtResource("2_ccixg")
 inputs = Array[int]([4])
 
-[node name="TreeMapNode7" type="Node2D" parent="TreeMap"]
-position = Vector2(192, 272)
+[node name="TreeMapNode7" type="Node2D" parent="TreeMap" unique_id=1890811115]
+position = Vector2(304, 608)
 script = ExtResource("2_ccixg")
 inputs = Array[int]([7])
 node_color = Color(1, 0.466667, 0, 1)
 
-[node name="TreeMapNode8" type="Node2D" parent="TreeMap"]
-position = Vector2(400, 272)
+[node name="TreeMapNode8" type="Node2D" parent="TreeMap" unique_id=560385181]
+position = Vector2(512, 608)
 script = ExtResource("2_ccixg")
 outputs = Array[int]([6])
 node_color = Color(1, 0, 1, 1)
@@ -68,30 +67,34 @@ line_color = Color(0, 0.533333, 1, 1)
 arrow_color = Color(1, 0, 0, 1)
 arrow_texture = ExtResource("3_77xbf")
 
-[node name="TreeMap2" type="Node2D" parent="."]
+[node name="TreeMap2" type="Node2D" parent="." unique_id=634118329]
 script = ExtResource("1_jwvn6")
-nodes = Array[Vector2]([Vector2(144, -168), Vector2(336, -160), Vector2(272.4237, -280.64505), Vector2(447.48004, -226.55038)])
 metadata/_custom_type_script = "uid://d2m0hkeep073t"
 
-[node name="TreeMapNode" type="Node2D" parent="TreeMap2"]
-position = Vector2(144, -168)
+[node name="TreeMapNode" type="Node2D" parent="TreeMap2" unique_id=2016632278]
+position = Vector2(138.18176, 169.0909)
+script = ExtResource("2_ccixg")
+
+[node name="TreeMapNode2" type="Node2D" parent="TreeMap2" unique_id=1803360253]
+position = Vector2(282.18176, 149.4545)
+script = ExtResource("2_ccixg")
+
+[node name="TreeMapNode3" type="Node2D" parent="TreeMap2" unique_id=2011048374]
+position = Vector2(193.45447, 38.909058)
+script = ExtResource("2_ccixg")
+
+[node name="TreeMap3" type="Node2D" parent="." unique_id=486553543 node_paths=PackedStringArray("selected_nodes")]
+script = ExtResource("1_jwvn6")
+selected_nodes = [NodePath("TreeMapNode")]
+metadata/_custom_type_script = "uid://d2m0hkeep073t"
+
+[node name="TreeMapNode2" type="Node2D" parent="TreeMap3" unique_id=956304494]
+position = Vector2(529.4545, 105.09085)
 script = ExtResource("2_ccixg")
 inputs = Array[int]([1])
+node_color = Color(1, 0.19, 0.19, 1)
 
-[node name="TreeMapNode2" type="Node2D" parent="TreeMap2"]
-position = Vector2(336, -160)
+[node name="TreeMapNode" type="Node2D" parent="TreeMap3" unique_id=1699434428]
+position = Vector2(654.5454, 33.818146)
 script = ExtResource("2_ccixg")
-outputs = Array[int]([0, 3])
-inputs = Array[int]([2])
-
-[node name="TreeMapNode3" type="Node2D" parent="TreeMap2"]
-position = Vector2(272.4237, -280.64505)
-script = ExtResource("2_ccixg")
-outputs = Array[int]([1])
-inputs = Array[int]([3])
-
-[node name="TreeMapNode4" type="Node2D" parent="TreeMap2"]
-position = Vector2(447.48004, -226.55038)
-script = ExtResource("2_ccixg")
-outputs = Array[int]([2])
-inputs = Array[int]([1])
+outputs = Array[int]([0])

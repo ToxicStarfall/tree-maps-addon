@@ -10,9 +10,9 @@ signal moved
 @export var inputs: Array[int] = []
 
 @export var locked: bool = false
+
 #@export_category("Customization")
 #@export var data: Resource
-
 
 @export_category("Overrides")
 # Defaults are overidden by TreeMap parent.
@@ -49,8 +49,6 @@ var parent_line_texture: Texture2D
 
 var override_properties = []
 
-#var selected
-
 
 func _setup():
 	#print("setup")
@@ -67,7 +65,7 @@ func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		set_notify_transform(true)
 		Engine.get_singleton("EditorInterface").get_inspector().property_edited.connect( _on_property_edited )
-	_setup()
+	#_setup()
 
 
 func _exit_tree() -> void:

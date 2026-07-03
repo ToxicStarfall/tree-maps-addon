@@ -31,7 +31,6 @@ func _init() -> void:
 
 
 func _enter_tree():
-	#add_autoload_singleton("PluginState", "res://addons/tree_maps/plugin_state.gd")
 	_add_tool_buttons()
 
 	Engine.get_singleton("EditorInterface").get_selection().selection_changed.connect( _on_selection_changed )
@@ -39,7 +38,6 @@ func _enter_tree():
 
 
 func _exit_tree():
-	#remove_autoload_singleton("PluginState")
 	_remove_tool_buttons()
 
 	Engine.get_singleton("EditorInterface").get_selection().selection_changed.disconnect( _on_selection_changed )
@@ -54,8 +52,11 @@ func _on_main_screen_changed(screen_name):
 	pass
 
 
+# Unused "default" editor plugin functions.
+#region
 func _has_main_screen():
 	return false
+
 
 #func _make_visible(visible):
 	#pass
@@ -66,13 +67,15 @@ func _has_main_screen():
 #func _get_plugin_icon():
 	#return Engine.get_singleton("EditorInterface").get_editor_theme().get_icon("Node", "EditorIcons")
 
-
 #func _on_scene_tree_node_added(node):
 	#if node is TreeMap: #or node is TreeMapNode:
 		#pass
+#endregion
 
 
+## Runs after _handles for both MouseUp and MouseDown when unselecting.
 func _on_selection_changed():
+	## The current transformable nodes selected in Editor
 	var selection = Engine.get_singleton("EditorInterface").get_selection().get_transformable_selected_nodes()
 
 	# Shows this plugin's editor tools in the toolbar when a node type of this plugin is selected.
@@ -146,10 +149,12 @@ func _forward_canvas_gui_input(event: InputEvent) -> bool:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			#print("mouse left intercepted")
 			pass
+		
 		# Intercept Right Mouse to clear editing mode and any selected nodes ONLY if currently editing.
-		if event.button_index == MOUSE_BUTTON_RIGHT:
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			#print("mouse right intercepted")
-			# Disable editing on the selected [TreeMap] on Mouse Right Click
+
+			# Deselect editing tools for current [TreeMap] on Mouse Right Click.
 			if selected_tree_map.edit_state != TreeMap.EditStates.NONE:
 				selected_tree_map.edit_state = TreeMap.EditStates.NONE
 				selected_tree_map.edited_nodes.clear()
@@ -196,14 +201,13 @@ func _init_tool_buttons():
 	chain_button.tooltip_text = "Chaining"
 
 	lock_button.icon = Engine.get_singleton("EditorInterface").get_editor_theme().get_icon("Unlock", "EditorIcons")
-	#chain_button.pressed.connect( func(): selected_tree_map.toggle_chaining() )
-	lock_button.tooltip_text = "Lock"
+	lock_button.tooltip_text = "Lock (WIP)"
 
 	reset_button.icon = Engine.get_singleton("EditorInterface").get_editor_theme().get_icon("RotateLeft", "EditorIcons")
-	reset_button.tooltip_text = "Reset"
+	reset_button.tooltip_text = "Reset (WIP)"
 
 	info_button.icon = Engine.get_singleton("EditorInterface").get_editor_theme().get_icon("Info", "EditorIcons")
-	info_button.tooltip_text = "Info"
+	info_button.tooltip_text = "Info (WIP)"
 
 
 func _on_tool_button_pressed(button):

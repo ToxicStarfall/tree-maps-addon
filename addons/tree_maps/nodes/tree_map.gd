@@ -3,8 +3,12 @@ class_name TreeMap
 extends Node2D
 
 
+signal node_added (node: TreeMapNode)
+signal node_removed (node: TreeMapNode)
+
 signal selection_changed
-signal notify_cleanup(node)
+signal notify_cleanup (node)
+
 
 enum EditStates { NONE, EDITING, ADDING, REMOVING }
 
@@ -21,6 +25,9 @@ enum EditStates { NONE, EDITING, ADDING, REMOVING }
 @export var node_instance: PackedScene  ## (WIP) Specify a custom node type to use instead of the built-in TreeMapNode.
 @export var min_length: int = 0  ## (WIP) Prevent placement of nodes within this radius of other nodes.
 @export var max_length: int = 0  ## (WIP) Prevent placement of nodes outside this radius of other nodes.
+
+#@export_tool_button("Sync Nodes")  ## Apply TreeMap customization settings on all children TreeMapNodes.
+#@export_tool_button("Force Sync Nodes")  ## Apply TreeMap customization settings on all children TreeMapNodes. Ignores overrided customizations.
 
 const default_color = Color.WHITE
 const default_arrow_texture = preload("res://addons/tree_maps/icons/arrow_filled.png")
@@ -174,24 +181,37 @@ func _on_selection_changed() -> void:
 			if edited_nodes.size() >= 1 and tree_map_nodes.size() >= 1:
 				for node in edited_nodes:
 					var target: TreeMapNode = tree_map_nodes[0]
-					# If existing connetion, remove connection
-					if node.has_connection(target.get_index(), node.outputs):
-						disconnect_nodes([node], target)
-					# Else [Node] does not have [Target] as a output (not connected).
-					else:
-						# If [Target] does not have [Node] as a output
-						if not target.outputs.has(node.get_index()):
-							if not node == target:
-								connnect_nodes([node], target)
-						else:  # swap connection directions
+					if not node == target:
+						# If [node] has existing connetion, remove connection.
+						if node.has_connection(target.get_index(), node.outputs):
+							disconnect_nodes([node], target)
+
+						# Check if [node] does not already have [target] as a output, then connect to [target].
+						# if [node] has [target] as an output, then it is already connected to it.
+						elif not target.outputs.has(node.get_index()):
+							# if not node == target:  # IF target is not self
+								print("AB")
+								connect_nodes([node], target)
+							#else:
+								#print("return")
+								#return  # Ignore all other instructions.
+
+						# Else swap connection directions.
+						else:
 							node.swap_connection(target.get_index(), node.inputs, node.outputs)
 							target.swap_connection(node.get_index(), target.outputs, target.inputs)
 							node.queue_redraw()  # Refresh the origin node.
 							target.queue_redraw()  # Refresh the target node.
-
-					if chaining_enabled:
-						edit_node(target)  # select targeted node if chaining is enabled.
-					else: select_node(node)  # reselect origin node if chaining is disabled.
+							print("CD")
+						
+						# TODO: Fix select loop
+						if chaining_enabled:
+							# Select targeted node if chaining is enabled.
+							edit_node(target)
+						else:
+							# Reselect origin node if chaining is disabled.
+							select_node(node)
+		
 		EditStates.ADDING:
 			# TODO: if TreeMap is selected, add nodes without connections
 			# TODO: Fix node not applyning inherited colors
@@ -199,10 +219,12 @@ func _on_selection_changed() -> void:
 				var new_node = create_tree_map_node()
 				setup_tree_map_node(new_node)
 				#new_node.apply_properties()
-				if chaining_enabled:
+				if chaining_enabled:  # Automatically selects and connects the new node.
 					for node in edited_nodes:
-						connnect_nodes([node], new_node)
+						connect_nodes([node], new_node)
 					edit_node(new_node)  # select newly created node if chaining is enabled.
+				else:  select_node(new_node)  # select newly created node
+
 		EditStates.REMOVING:
 			if !tree_map_nodes.is_empty():
 				for target in tree_map_nodes:  # Remove all selected nodes
@@ -211,7 +233,6 @@ func _on_selection_changed() -> void:
 
 
 func _on_node_moved(node):
-	#print(node)
 	node.queue_redraw()
 	for i in node.inputs:
 		node = get_input_output_node(i)
@@ -281,7 +302,7 @@ func remove_tree_map_node(node) -> TreeMapNode:
 	return node
 
 
-func connnect_nodes(connecting_nodes: Array[TreeMapNode], target_node: TreeMapNode):
+func connect_nodes(connecting_nodes: Array[TreeMapNode], target_node: TreeMapNode):
 	for connecting_node in connecting_nodes:
 		connecting_node.add_connection(target_node.get_index(), connecting_node.outputs)
 		target_node.add_connection(connecting_node.get_index(), target_node.inputs)
@@ -294,17 +315,20 @@ func disconnect_nodes(disconnecting_nodes: Array[TreeMapNode], target_node: Tree
 		target_node.remove_connection(disconnecting_node.get_index(), target_node.inputs)
 
 
+## Add the node to selection
 func select_node(node):
 	Engine.get_singleton("EditorInterface").get_selection().clear()
 	Engine.get_singleton("EditorInterface").get_selection().add_node(node)
 
 
+## Adds the nodes to selection
 func select_nodes(nodes: Array):
 	Engine.get_singleton("EditorInterface").get_selection().clear()
 	for node in nodes:
 		Engine.get_singleton("EditorInterface").get_selection().add_node(node)
 
 
+## Add the node to selection and set as actively edited by plugin.
 func edit_node(node):
 	Engine.get_singleton("EditorInterface").get_selection().clear()
 	Engine.get_singleton("EditorInterface").get_selection().add_node(node)

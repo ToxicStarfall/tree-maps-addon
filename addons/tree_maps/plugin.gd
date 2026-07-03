@@ -86,58 +86,96 @@ func _on_selection_changed():
 			break
 	editor_tool_button_hbox.visible = show
 
-	# Clear last selected TreeMap before updating TreeMap selection.
-	if selected_tree_map:
-		selected_tree_map.selected_nodes.clear()
-		selected_tree_map.selection_changed.emit()
+	#if selection:
+		## Clear last selected TreeMap before updating TreeMap selection.
+		#if selected_tree_map:
+			#selected_tree_map.selected_nodes.clear()
+			#selected_tree_map.selection_changed.emit()
+#
+		## Search for first TreeMap in selection.
+		#for node in selection:
+			#if node is TreeMap or node is TreeMapNode:
+				#if node is TreeMapNode:
+					#selected_tree_map = node.get_parent()
+					#break
+				#elif node is TreeMap:
+					#selected_tree_map = node
+					#break
+#
+		#if selected_tree_map:
+			## Update tool buttons display to match the selected TreeMap's editing state
+			#if selected_tree_map.edit_state != TreeMap.EditStates.NONE:
+				#tool_buttons.get_buttons()[max(selected_tree_map.edit_state - 1, 0)].button_pressed = true
+			#else:
+				#for b in tool_buttons.get_buttons():
+					#b.button_pressed = false
+			#chain_button.button_pressed = selected_tree_map.chaining_enabled
+#
+		#if selected_tree_map:
+			## Apply new selection to the first selected TreeMap and send selection signal.
+			#selected_tree_map.selected_nodes = selection
+			##selected_tree_map.selection_changed.emit()
+			#selected_tree_map.queue_redraw()
 
-	# Search for first TreeMap in selection.
-	for node in selection:
-		if node is TreeMap or node is TreeMapNode:
-			if node is TreeMapNode:
-				selected_tree_map = node.get_parent()
-				break
-			elif node is TreeMap:
-				selected_tree_map = node
-				break
-
 	if selected_tree_map:
-		# Apply new selection to the first selected TreeMap and send selection signal.
+		print("a")
+		selected_tree_map.selection_changed.emit()  # Runs first to avoid false triggers from deleting selected nodes and losing selection
+	
+	# if !selection and selected_tree_map:
+	if selection.is_empty() and selected_tree_map:
+		print("b")
 		selected_tree_map.selected_nodes = selection
-		selected_tree_map.selection_changed.emit()
-
-		# Update tool buttons display to match the selected TreeMap's editing state
-		if selected_tree_map.edit_state != TreeMap.EditStates.NONE:
-			tool_buttons.get_buttons()[max(selected_tree_map.edit_state - 1, 0)].button_pressed = true
-		else:
-			for b in tool_buttons.get_buttons():
-				b.button_pressed = false
-		chain_button.button_pressed = selected_tree_map.chaining_enabled
-
+		selected_tree_map.queue_redraw()
 
 
 ## Built-in
 func _handles(object: Object) -> bool:
-	if object is TreeMap or object is TreeMapNode:
-		#var temp = selected_tree_map
-		#if object is TreeMapNode:
-			#selected_tree_map = object.get_parent()
-		#elif object is TreeMap:
-			#selected_tree_map = object
+	var selection: Array = Engine.get_singleton("EditorInterface").get_selection().get_transformable_selected_nodes()
+	#if object is TreeMap or object is TreeMapNode:
+	if selection.filter( func(node): if node is TreeMap or node is TreeMapNode: return node ):
+		if selection:
+			# Clear last selected TreeMap before updating TreeMap selection.
+			if selected_tree_map:
+				selected_tree_map.selected_nodes.clear()
+				selected_tree_map.queue_redraw()
 
-		#if selected_tree_map != temp:
-			#print("FAD - ", temp)
-			##temp.selected_nodes.clear()
-			#temp.selection_changed.emit()
+				#if selection.has(selected_tree_map):
+				print(selected_tree_map)
 
-		#$ Update tool buttons display to match the selected TreeMap's editing state
-		#if selected_tree_map.edit_state != TreeMap.EditStates.NONE:
-			#tool_buttons.get_buttons()[max(selected_tree_map.edit_state - 1, 0)].button_pressed = true
-		#else:
-			#for b in tool_buttons.get_buttons():
-				#b.button_pressed = false
-#
-		#chain_button.button_pressed = selected_tree_map.chaining_enabled
+			# Search for first TreeMap in selection.
+			for node in selection:
+				if node is TreeMap or node is TreeMapNode:
+					#if node == selected_tree_map:
+					print("BBBBBBBBBDAA")
+						
+					if node is TreeMapNode:
+						selected_tree_map = node.get_parent()
+						break
+					elif node is TreeMap:
+						selected_tree_map = node
+						break
+
+			# Update tool buttons display to match the selected TreeMap's editing state
+			if selected_tree_map:
+				if selected_tree_map.edit_state != TreeMap.EditStates.NONE:
+					tool_buttons.get_buttons()[max(selected_tree_map.edit_state - 1, 0)].button_pressed = true
+				else:
+					for b in tool_buttons.get_buttons():
+						b.button_pressed = false
+				chain_button.button_pressed = selected_tree_map.chaining_enabled
+
+			# Apply new selection to the first selected TreeMap and send selection signal.
+			if selected_tree_map:
+				#print(selected_tree_map, " - ", selection)
+				selected_tree_map.selected_nodes = selection
+				#selected_tree_map.selection_changed.emit()
+
+		#if selected_tree_map:
+			#selected_tree_map.selected_nodes = selection
+			#selected_tree_map.selection_changed.emit()
+		selected_tree_map.queue_redraw()
+
+		print("ZZZZZZZZZZZZzzzz")
 		return true
 	else:
 		return false

@@ -78,6 +78,7 @@ func _draw() -> void:
 	_draw_node()
 
 
+## Draws the lines which connect two nodes together.
 func _draw_connection():
 	for i in outputs:
 		draw_set_transform(Vector2(0,0), 0)  # Reset drawing position
@@ -92,6 +93,7 @@ func _draw_connection():
 		draw_texture(arrow_texture, -arrow_texture.get_size() / 2, arrow_color)
 
 
+## Draws the node.
 func _draw_node():
 	draw_set_transform(Vector2(0,0), 0)
 	if parent_node_texture:
@@ -103,6 +105,8 @@ func _draw_node():
 
 
 func _notification(what) -> void:
+	#if what == NOTIFICATION_EXIT_TREE:
+		#pass
 	if what == NOTIFICATION_TRANSFORM_CHANGED:
 		moved.emit(self)
 
@@ -152,8 +156,12 @@ func toggle_lock():
 
 
 ## Adds a idx for node connections.
-func add_connection(idx: int, connection_array: Array[int]):
-	connection_array.append(idx)
+#func add_connection(idx: int, connection_array: Array[int]):
+func add_connection(idx: int, connection_array: String):
+	var a = get(connection_array).duplicate()
+	a.append(idx)
+	set(connection_array, a)
+	#connection_array.append(idx)
 	queue_redraw()
 
 

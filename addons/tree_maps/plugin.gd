@@ -169,6 +169,24 @@ func _on_selection_changed():
 			##selected_tree_map.selection_changed.emit()
 			#selected_tree_map.queue_redraw()
 	
+	# Mouse Left press
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		if selected_tree_map:
+			# Runs first to avoid false triggers from deleting selected nodes and losing selection
+			#selected_tree_map.selection_changed.emit()
+		
+			if selection.is_empty():
+				#print("empty selection")
+				selected_tree_map.selected_nodes = []  
+				selected_tree_map.queue_redraw()
+				pass
+			selected_tree_map.selection_changed.emit()
+	# Mouse Left release
+	else:
+		pass
+	
+
+
 func _forward_canvas_gui_input(event: InputEvent) -> bool:
 	var intercepted = false
 	if event is InputEventMouseButton:

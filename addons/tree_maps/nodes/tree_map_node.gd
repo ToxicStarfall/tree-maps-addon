@@ -9,7 +9,8 @@ signal moved
 @export var outputs: Array[int] = []
 @export var inputs: Array[int] = []
 
-@export var locked: bool = false
+@export var is_locked: bool = false
+@export_tool_button("Refresh", "Reload") var refresh_action = refresh
 
 #@export_category("Customization")
 #@export var data: Resource
@@ -76,6 +77,7 @@ func _exit_tree() -> void:
 func _draw() -> void:
 	_draw_connection()
 	_draw_node()
+	_draw_status()
 
 
 ## Draws the lines which connect two nodes together.
@@ -102,6 +104,12 @@ func _draw_node():
 	else:
 		draw_circle(Vector2(0,0), parent_node_size / 2, node_color, true)
 		#draw_colored_polygon()
+
+
+func _draw_status():
+	if is_locked:
+		draw_texture(preload("res://addons/tree_maps/icons/editor/Lock.svg"), Vector2(0.5, 0.5) * parent_node_size, Color.WHITE)
+	pass
 
 
 func _notification(what) -> void:
@@ -148,6 +156,10 @@ func apply_properties():
 	if node_color == parent_node_color: node_color = parent_node_color
 	if arrow_color == parent_arrow_color: arrow_color = parent_arrow_color
 	if arrow_texture == parent_arrow_texture: arrow_texture = parent_arrow_texture
+	queue_redraw()
+
+
+func refresh():
 	queue_redraw()
 
 

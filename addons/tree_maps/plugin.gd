@@ -246,7 +246,7 @@ func _init_tool_buttons():
 
 	lock_button.icon = Engine.get_singleton("EditorInterface").get_editor_theme().get_icon("Unlock", "EditorIcons")
 	lock_button.pressed.connect( func(): selected_tree_map.toggle_locking() )
-	lock_button.tooltip_text = "Lock (WIP)"
+	lock_button.tooltip_text = "Lock"
 
 	reset_button.icon = Engine.get_singleton("EditorInterface").get_editor_theme().get_icon("RotateLeft", "EditorIcons")
 	reset_button.tooltip_text = "Reset (WIP)"

@@ -9,8 +9,8 @@ signal moved
 @export var outputs: Array[int] = []
 @export var inputs: Array[int] = []
 
-@export var is_locked: bool = false
 @export_tool_button("Refresh", "Reload") var refresh_action = refresh
+@export var is_locked: bool = false  ## Internal use.
 
 #@export_category("Customization")
 #@export var data: Resource

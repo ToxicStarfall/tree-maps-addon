@@ -9,6 +9,7 @@
 [node name="TreeMap" type="Node2D" parent="." unique_id=2122192343]
 script = ExtResource("1_jwvn6")
 nodes = Array[Vector2]([Vector2(112, 528), Vector2(304, 528), Vector2(496, 360), Vector2(304, 360), Vector2(608, 528), Vector2(744, 360), Vector2(304, 608), Vector2(512, 608)])
+node_modulate = null
 
 [node name="TreeMapNode" type="Node2D" parent="TreeMap" unique_id=1060341477]
 position = Vector2(112, 528)
@@ -70,20 +71,23 @@ arrow_texture = ExtResource("3_77xbf")
 
 [node name="TreeMap2" type="Node2D" parent="." unique_id=634118329 node_paths=PackedStringArray("selected_nodes")]
 script = ExtResource("1_jwvn6")
-selected_nodes = [NodePath("TreeMapNode2"), NodePath("TreeMapNode5"), NodePath("TreeMapNode3")]
-nodes = Array[Vector2]([Vector2(384, 0), Vector2(576, 0), Vector2(517.1198, 191.62001)])
+selected_nodes = [NodePath("TreeMapNode"), NodePath("TreeMapNode2"), NodePath("TreeMapNode3")]
+nodes = Array[Vector2]([Vector2(184, 64), Vector2(308.85913, 91.147), Vector2(462.31366, 62.783356)])
+node_modulate = null
 metadata/_custom_type_script = "uid://d2m0hkeep073t"
 
-[node name="TreeMapNode2" type="Node2D" parent="TreeMap2" unique_id=1707689222]
-position = Vector2(384, 0)
+[node name="TreeMapNode" type="Node2D" parent="TreeMap2" unique_id=581625242]
+position = Vector2(184, 64)
 script = ExtResource("2_ccixg")
-is_locked = true
+outputs = Array[int]([1])
 
-[node name="TreeMapNode5" type="Node2D" parent="TreeMap2" unique_id=565919941]
-position = Vector2(576, 0)
+[node name="TreeMapNode2" type="Node2D" parent="TreeMap2" unique_id=1130245908]
+position = Vector2(320, 120)
 script = ExtResource("2_ccixg")
-is_locked = true
+outputs = Array[int]([2])
+inputs = Array[int]([0])
 
-[node name="TreeMapNode3" type="Node2D" parent="TreeMap2" unique_id=969280455]
-position = Vector2(517.1198, 191.62001)
+[node name="TreeMapNode3" type="Node2D" parent="TreeMap2" unique_id=1025619947]
+position = Vector2(462.31366, 62.783356)
 script = ExtResource("2_ccixg")
+inputs = Array[int]([1])

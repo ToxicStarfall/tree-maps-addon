@@ -316,9 +316,16 @@ func toggle_chaining():
 
 
 func toggle_locking():
-	for node in selected_nodes:
-		node.is_locked = !node.is_locked
-		node.queue_redraw()
+	var lock_statuses = selected_nodes.map( func(node): return node.is_locked )
+	if lock_statuses.has(false) and lock_statuses.has(true):
+		for node in selected_nodes:
+			node.is_locked = true
+			node.queue_redraw()
+	else:
+		for node in selected_nodes:
+			node.is_locked = !node.is_locked
+			node.queue_redraw()		
+	
 
 
 func add_tree_map_node() -> TreeMapNode:

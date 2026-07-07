@@ -6,11 +6,11 @@ signal moved
 #signal connections_edited
 
 
-@export var outputs: Array[int] = []
-@export var inputs: Array[int] = []
+@export var outputs: Array[int] = []  ## Internal use.
+@export var inputs: Array[int] = []  ## Internal use.
 
-@export_tool_button("Refresh", "Reload") var refresh_action = refresh
 @export var is_locked: bool = false  ## Internal use.
+@export_tool_button("Refresh", "Reload") var refresh_action = refresh  ## Refresh node drawing/visuals.
 
 #@export_category("Customization")
 #@export var data: Resource
@@ -119,6 +119,7 @@ func _notification(what) -> void:
 		moved.emit(self)
 
 
+# property reset functionality
 func _property_can_revert(property: StringName) -> bool:
 	match property:
 		"line_color", "node_color", "arrow_color", "arrow_texture":
@@ -126,6 +127,7 @@ func _property_can_revert(property: StringName) -> bool:
 	return false
 
 
+#
 func _property_get_revert(property: StringName) -> Variant:
 	#match property:
 		#"line_color":

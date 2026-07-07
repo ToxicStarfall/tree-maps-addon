@@ -1,18 +1,18 @@
 
+<!-- image here -->
+<!-- ![Annotation](url)-->
 <h1 align="center">
 	Tree Maps - Graphs and Skill Trees
 </h1>
 <p align="center">
 	Tree Maps provides useful nodes and functionality to help create graphical maps of tree-like node structures.
-	<br>
-	Perfect for skill trees, technology trees, and or dungeon maps.
 </p>
 <img width="1027" height="428" alt="image" src="https://github.com/user-attachments/assets/33846207-1cb2-458d-8d88-33f94e250fa7" />
 
 <br>
 <p align="center">
-	<a href="https://godotengine.org/asset-library/">Godot Asset Library</a> -
-	<a href="https://github.com/ToxicStarfall/skill-tree-addon/releases">Releases</a>
+	<a href="https://github.com/ToxicStarfall/skill-tree-addon/releases">Releases (more up to date)</a> - 
+	<a href="https://godotengine.org/asset-library/asset/4362">Godot Asset Library</a>
 </p>
 
 #
@@ -22,7 +22,7 @@ One day while trying to make a very large technology tree, I found that I was ha
 which would allow me quickly expand and add lots of different upgrades and paths. To simplify this process
 I decided to create Tree Maps in order to adress some of the complications behind creating tech/skill trees.
 <br><br>
-Currently, this remains a very simple addon, however I plan to continue adding features in order to help with
+Currently, this remains a relatively simple addon, however I plan to continue adding features in order to help with
 creating fully fledged skill and technology trees.
 <br><br>
 
@@ -57,60 +57,76 @@ This addon adds two new custom nodes which both inherit from `Node2D`: `TreeMap`
 <br><br>
 
 Starting in 2D view, add a new `TreeMap` to your scene, positioned at the origin.
-
-> Note: Positioning the `TreeMap` node anywhere else will effect drawing of `TreeMapNodes`.
-> Will be fixed later.
+> [!NOTE]
+> Positioning the `TreeMap` node anywhere else will effect drawing of `TreeMapNodes`.
 <br>
 
-`TreeMap` comes with several custom properties in the Inspector.
-By default, these properties will be passed down to any children `TreeMapNode`s.
+Upon selecting the new `TreeMap` node, some new tools will become available in the tool bar.
+A new `TreeMapNode` can be added with the "Add Nodes" tool. see [Main Tools](#main-tools) for more info.
+New `TreeMapNode`s can be moved around normally in the 2D View.
+
+> [!NOTE]
+> You can add nodes manually, however you will have to refresh the Scene Tree (Reload scene, or Open and Close the scene).
+
+> [!WARNING]
+> It is highly recommended to have ONLY `TreeMapNode` be direct children of `TreeMap`.
+> Using nodes which are not and do not inherit from `TreeMapNode` **will** result in errors.
+<br>
+
+Both `TreeMap` and `TreeMapNode` come with several customizable properties in the Inspector.
+By default, `TreeMap`'s properties will be passed down to any children `TreeMapNode`s.
 These properties will effect how `TreeMapNode` childs will be displayed and/or interact.
 
-From here, you can now add `TreeMapNode` as a child of the `TreeMap`, see [Main Tools](#main-tools)
-for the "Add Nodes" tool.
-> Note: You can add nodes manually, however you will have to refresh the Scene Tree (Reload scene, or Open and Close the scene).
-
-> Note: It is highly recommended to have `TreeMapNode` be children of `TreeMap`.
-> By continueing without `TreeMap`, there **WILL** be errors.
-<br>
-
-Editing any properties within the "Overrides" section will result in that `TreeMapNode` having its own
-property seperate from its parent `TreeMap`. To reset it to its default inherited property, simply
+Editing any properties within a `TreeMapNode`'s "Overrides" section will result in that `TreeMapNode` having its own
+property seperate from its parent `TreeMap`. Changes to the `TreeMap`'s properties will not affect it. To reset it to its default inherited property, simply
 reset the property normally.
-<br><br>
+<br>
 
 Upon selecting a `TreeMap` or `TreeMapNode`, you can see in the tool bar at the top will change,
 showing some new tool buttons. These will allow you to edit your `TreeMapNode`(s)
-<br>
-
+<br><br>
 
 <a href="#main-tools">
 	<h3>Main Tools</h3>
 </a>
-<em>Tip: Right click to disable the active main tool.</em><br>
+<img width="218" height="37" alt="tree-maps-tools" src="https://github.com/user-attachments/assets/48c3f2ca-9a48-40e8-ad83-9c43c4e791ad" />
 
-> Note: When activating a tool, the currently selected node is your main node, from which tools
+> [!NOTE]
+> When activating a tool, the currently selected node is your main node, from which tools
 > will act from. Selecting another node while your tool is active will make that the target node.
 > To select a different node to edit from, simply deactivate the tool, then select your new node
 > and reactivate the tool.
 
-- **Edit Connections**:
-	Click to create connection.
-	If there is a existing connection, remove it instead.
-	If there is a existing connection poiting towards the selected node, swap pointing direction.
-- **Add Nodes** - Creates a new `TreeMapNode` at mouse click.
+- **Edit Connections** - <br>
+	- Select a node to create a new connection to it.<br>
+	- If there is a existing connection, remove it instead.<br>
+	- If there is a existing connection pointing towards the origin node, swap pointing direction.
+- **Add Nodes** - Click to add a new `TreeMapNode` at the current mouse position in 2D View.
 - **Remove Nodes** - Removes the selected node.
+
+> [!TIP]
+> Right click to disable the active main tool.
+
+> [!WARNING]
+> Selecting and targeting nodes directly in the scene tree with a tool works, however it is more bug/error prone.
+> Use the 2D View to select and target nodes with tools instead.
 
 
 <h3>Modifiers</h3>
-These tools change the way Main Tools behave.
+Modifiers change the way the Main Tools behave.<br>
 
 - **Chaining** - selects the targeted node after using a tool (if applicable).
-- **Lock/Unlock (WIP)** - disables editing of the selecetd node(s).
+- **Lock/Unlock** - disable/enables editing of the selecetd node(s). 
+
+> [!TIP]
+> Tools and Modifiers can be used to select and target multiple nodes at once!
+
+> [!TIP]
+> Use the Chaining modifier to easily connect or disconnect a series of nodes. 
 
 <h3>Miscellaneous</h3>
 
-- **Reset (WIP)** - resets the selected node's properties to the default inherited values.
+- **Reset (WIP)** - resets all of the selected node's properties to the default inherited values.
 - **Info (WIP)** - Shows helpful info
 <br><br>
 
@@ -121,6 +137,10 @@ These tools change the way Main Tools behave.
 **Demo video**
 
 https://github.com/user-attachments/assets/fbfc2732-9639-446d-b620-4464e99fa997
+
+<img width="381" height="126" alt="tree-maps-example-2" src="https://github.com/user-attachments/assets/ab330c81-42a5-4f5b-bc32-5a264385f1d3" />
+<br>
+<img width="581" height="425" alt="tree-maps-example-3" src="https://github.com/user-attachments/assets/88cd6851-7516-44ab-858e-bdcbc8a53077" />
 
 
 <br>

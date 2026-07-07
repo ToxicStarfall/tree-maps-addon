@@ -12,13 +12,13 @@ signal notify_cleanup (node)
 
 enum EditStates { NONE, EDITING, ADDING, REMOVING }
 
-@export var edit_state: EditStates = EditStates.NONE
-@export var chaining_enabled: bool = false
+@export var edit_state: EditStates = EditStates.NONE  ## Internal use.
+@export var chaining_enabled: bool = false  ## Internal use.
 
-@export var selected_nodes: Array[Node] = []
-@export var edited_nodes: Array[TreeMapNode] = []
+@export var selected_nodes: Array[Node] = []  ## Internal use.
+@export var edited_nodes: Array[TreeMapNode] = []  ## Internal use.
 
-@export var nodes: Array[Vector2] = []  ## The nodes within this TreeMap.
+@export var nodes: Array[Vector2] = []  ## The nodes within this TreeMap. Internal use.
 
 
 @export_category("Customization")
@@ -36,13 +36,14 @@ const default_arrow_texture = preload("res://addons/tree_maps/icons/arrow_filled
 @export_group("Nodes")
 @export var node_color: Color = default_color
 @export var node_size: float = 24.0  ## TreeMap only for now
-@export_enum("Circle", "Square") var node_shape: String = "Circle"  ## (WIP) TreeMap only for now  Circle only.
-@export var node_texture: Texture2D  ## (WIP) TreeMap only for now  Overrides node shape.
+@export_enum("Circle", "Square") var node_shape: String = "Circle"  ## (WIP) TreeMap only for now. Circle only.
+@export var node_texture: Texture2D  ## Overrides node shape.
+@export var node_modulate: Color  ## (WIP) TreeMap only for now. Modulates node color and texture.
 
 @export_group("Lines")
 @export var line_color: Color = default_color
-@export var line_thickness: float = 10.0  ## TreeMap only for now
-@export var line_texture: Texture2D  ## (WIP) TreeMap only for now
+@export var line_thickness: float = 10.0  ## TreeMap only for now.
+@export var line_texture: Texture2D  ## (WIP) TreeMap only for now.
 @export_subgroup("Lines Extra")
 #@export var line_border_color: Color
 #@export var line_fill_texture: Texture2D
@@ -51,6 +52,7 @@ const default_arrow_texture = preload("res://addons/tree_maps/icons/arrow_filled
 @export_group("Arrows")
 @export var arrow_color: Color = default_color
 #@export var arrow_border_color: Color
+#@export_enum("Default", "Thin", "Outline") var arrow_style: String = "Default"  ## (WIP) TreeMap only for now.
 @export var arrow_texture: Texture2D = default_arrow_texture
 
 # TODO:  Properties which are overriden will reset, if its the same as parent when editing parent's properties.
@@ -97,8 +99,7 @@ func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		#set_notify_transform(true)
 		set_physics_process(true)
-		#Engine.get_singleton("EditorInterface").get_inspector().property_edited.connect( _on_property_edited )
-		#Engine.get_singleton("EditorInterface").get_selection().selection_changed.connect( _on_selection_changed )
+		Engine.get_singleton("EditorInterface").get_inspector().property_edited.connect( _on_property_edited )
 		#Engine.get_singleton("EditorInterface").get_selection().selection_changed.connect( _on_selection_changed )  # Handled in plugin.gd
 		child_entered_tree.connect( _on_child_entered_tree )
 		child_exiting_tree.connect( _on_child_exiting_tree )
@@ -142,6 +143,8 @@ func _on_child_entered_tree(child: Node) -> void:
 		child.moved.connect( _on_node_moved )
 		#child.connections_edited.connect( _on_node_connections_edited )
 		# Adjust saved indexes for child items' connections
+		
+		#if child
 
 
 func _on_child_exiting_tree(child: Node) -> void:

@@ -68,6 +68,7 @@ func _setup():
 		if child is TreeMapNode:
 			nodes.append(child.position)
 			setup_tree_map_node(child)
+	edit_state = TreeMap.EditStates.NONE  # Reset edit state.
 	#print(nodes)
 
 
@@ -77,27 +78,13 @@ func setup_tree_map_node(node):
 		var parent_value = get(property)
 		var parent_property = "parent_" + property
 		# Before updating inherited properties, check if that property was actually inherited.
-		# If it was, use inheited value as the default revert value for that property.
+		# If it was, use inherited value as the default revert value for that property.
 		if node.get(property) == node.get(parent_property):
 			node.set(parent_property, parent_value)
 			node.set(property, node.property_get_revert(property))
-		#
 		else:
 			node.set(parent_property, get(property))
-
-	## Before updating inherited properties, check if that property was actually inherited.
-	#if node.line_color == node.parent_line_color:
-		#node.parent_line_color = line_color
-		#node.line_color = node.property_get_revert("line_color") # set to parent_line_color
-	#else:
-		#node.parent_line_color = line_color
-
-	#if node.node_color == node.parent_node_color:
-		#node.parent_node_color = node_color
-		#node.node_color = node.property_get_revert("node_color")
-	#else:
-		#node.parent_node_color = node_color
-	#node.apply_properties()
+	node.apply_properties()
 
 
 func _ready() -> void:
@@ -112,6 +99,7 @@ func _enter_tree() -> void:
 		set_physics_process(true)
 		#Engine.get_singleton("EditorInterface").get_inspector().property_edited.connect( _on_property_edited )
 		#Engine.get_singleton("EditorInterface").get_selection().selection_changed.connect( _on_selection_changed )
+		#Engine.get_singleton("EditorInterface").get_selection().selection_changed.connect( _on_selection_changed )  # Handled in plugin.gd
 		child_entered_tree.connect( _on_child_entered_tree )
 		child_exiting_tree.connect( _on_child_exiting_tree )
 		selection_changed.connect( _on_selection_changed )
@@ -120,7 +108,7 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
 	if Engine.is_editor_hint():
-		#Engine.get_singleton("EditorInterface").get_inspector().property_edited.disconnect( _on_property_edited )
+		Engine.get_singleton("EditorInterface").get_inspector().property_edited.disconnect( _on_property_edited )
 		#Engine.get_singleton("EditorInterface").get_selection().selection_changed.disconnect( _on_selection_changed )
 		child_entered_tree.disconnect( _on_child_entered_tree )
 		child_exiting_tree.disconnect( _on_child_exiting_tree )
@@ -173,18 +161,12 @@ func _on_child_exiting_tree(child: Node) -> void:
 		#print("exited")
 
 
-# Refresh properties on children
+# Refresh/update properties on children
 func _on_property_edited(property) -> void:
 	if Engine.get_singleton("EditorInterface").get_inspector().get_edited_object() == self:
-		#match property:
-			#"line_color", "node_color", "arrow_color", "arrow_texture":
-		for prop in setup_properties:
-			if property == prop:
-			# Update childrens' properties
-				for i in get_children():
-					if i is TreeMapNode:
-						setup_tree_map_node(i)
-						#i.apply_properties()
+		if setup_properties.has(property):
+			for node in get_tree_map_nodes():
+				setup_tree_map_node(node)
 
 
 func _on_selection_changed() -> void:
@@ -252,10 +234,12 @@ func _on_selection_changed() -> void:
 			if !tree_map_nodes.is_empty():
 				for target in tree_map_nodes:  # Remove all selected nodes
 					if not target.is_locked:
-						#print(target)	
-						#select_node(target.get_parent())   # Reselect parent TreeMap to make removing nodes clean.
-						select_node(self)   # Reselect parent TreeMap to make removing nodes clean.
-						remove_tree_map_node(target).queue_free()
+						if target.get_parent() == self:  # Only allow targeting nodes who are this TreeMap's children
+							# TODO Fix removal removing all nodes when selecting a TreeMapNode from another TreeMap directly from the Scene Tree.
+							#print(target)
+							#print(self)
+							select_node(self)  # Reselect parent TreeMap to make removing nodes clean.
+							remove_tree_map_node(target).queue_free()
 					else:
 						Engine.get_singleton("EditorInterface").get_editor_toaster().push_toast("A node is locked. Ignoring removal.", EditorToaster.SEVERITY_INFO)
 
@@ -274,6 +258,10 @@ func _on_node_moved(node):
 
 func refresh():
 	#for i in get_
+	pass
+	
+
+func update_property():
 	pass
 
 
@@ -339,6 +327,7 @@ func add_tree_map_node() -> TreeMapNode:
 
 
 func remove_tree_map_node(node) -> TreeMapNode:
+	print("removed")
 	var idx = node.get_index()
 	#nodes.erase(node.position)
 	var copy = nodes.duplicate()

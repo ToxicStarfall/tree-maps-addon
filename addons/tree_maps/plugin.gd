@@ -90,8 +90,6 @@ func _handles(object: Object) -> bool:
 			# Search for first TreeMap in selection.
 			for node in selection:
 				if node is TreeMap or node is TreeMapNode:
-					#if node == selected_tree_map:
-					#print("BBBBBBBBBDAA")
 						
 					if node is TreeMapNode:
 						selected_tree_map = node.get_parent()
@@ -99,6 +97,7 @@ func _handles(object: Object) -> bool:
 					elif node is TreeMap:
 						selected_tree_map = node
 						break
+					selected_tree_map.edit_state = 0  # Reset edit state to NONE to prevent tool trigger when swapping TreeMaps
 
 			# Update tool buttons display to match the selected TreeMap's editing state
 			if selected_tree_map:

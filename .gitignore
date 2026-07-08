@@ -18,3 +18,4 @@ mono_crash.*.json
 
 # Custom ignores
 addons/godot_super_wakatime/
+/addons/godot_super-wakatime

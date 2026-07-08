@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://c13uwb1wlegxr"]
+
+[ext_resource type="Script" uid="uid://d2m0hkeep073t" path="res://addons/tree_maps/nodes/tree_map.gd" id="1_jwvn6"]
+[ext_resource type="Script" uid="uid://cn4fi27bjgvjq" path="res://addons/tree_maps/nodes/tree_map_node.gd" id="2_ccixg"]
+[ext_resource type="Texture2D" uid="uid://bxh7dktvo38v3" path="res://addons/tree_maps/icons/arrow.png" id="3_77xbf"]
+
+[node name="Node" type="Node" unique_id=1113942159]
+
+[node name="TreeMap" type="Node2D" parent="." unique_id=2122192343]
+script = ExtResource("1_jwvn6")
+nodes = Array[Vector2]([Vector2(112, 528), Vector2(304, 528), Vector2(496, 360), Vector2(304, 360), Vector2(608, 528), Vector2(744, 360), Vector2(304, 608), Vector2(512, 608)])
+node_modulate = null
+
+[node name="TreeMapNode" type="Node2D" parent="TreeMap" unique_id=1060341477]
+position = Vector2(112, 528)
+script = ExtResource("2_ccixg")
+outputs = Array[int]([3])
+inputs = Array[int]([1])
+metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
+
+[node name="TreeMapNode2" type="Node2D" parent="TreeMap" unique_id=1361318114]
+position = Vector2(304, 528)
+script = ExtResource("2_ccixg")
+outputs = Array[int]([0])
+inputs = Array[int]([2, 3])
+line_color = Color(1, 0, 0, 1)
+metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
+
+[node name="TreeMapNode3" type="Node2D" parent="TreeMap" unique_id=268349143]
+position = Vector2(496, 360)
+script = ExtResource("2_ccixg")
+outputs = Array[int]([1, 4])
+inputs = Array[int]([0, 3])
+line_color = Color(0.0833333, 1, 0, 1)
+metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
+
+[node name="TreeMapNode4" type="Node2D" parent="TreeMap" unique_id=1031428637]
+position = Vector2(304, 360)
+script = ExtResource("2_ccixg")
+outputs = Array[int]([1, 2])
+inputs = Array[int]([0])
+line_color = Color(1, 0.8, 0, 1)
+metadata/_custom_type_script = "uid://cn4fi27bjgvjq"
+
+[node name="TreeMapNode5" type="Node2D" parent="TreeMap" unique_id=1659441255]
+position = Vector2(608, 528)
+script = ExtResource("2_ccixg")
+outputs = Array[int]([5])
+inputs = Array[int]([2])
+line_color = Color(0, 0.6, 1, 1)
+
+[node name="TreeMapNode6" type="Node2D" parent="TreeMap" unique_id=538447230]
+position = Vector2(744, 360)
+script = ExtResource("2_ccixg")
+inputs = Array[int]([4])
+
+[node name="TreeMapNode7" type="Node2D" parent="TreeMap" unique_id=1890811115]
+position = Vector2(304, 608)
+script = ExtResource("2_ccixg")
+inputs = Array[int]([7])
+node_color = Color(1, 0.466667, 0, 1)
+
+[node name="TreeMapNode8" type="Node2D" parent="TreeMap" unique_id=560385181]
+position = Vector2(512, 608)
+script = ExtResource("2_ccixg")
+outputs = Array[int]([6])
+node_color = Color(1, 0, 1, 1)
+line_color = Color(0, 0.533333, 1, 1)
+arrow_color = Color(1, 0, 0, 1)
+arrow_texture = ExtResource("3_77xbf")
+
+[node name="TreeMap2" type="Node2D" parent="." unique_id=634118329 node_paths=PackedStringArray("selected_nodes")]
+script = ExtResource("1_jwvn6")
+selected_nodes = [NodePath("TreeMapNode"), NodePath("TreeMapNode2"), NodePath("TreeMapNode3")]
+nodes = Array[Vector2]([Vector2(184, 64), Vector2(308.85913, 91.147), Vector2(462.31366, 62.783356)])
+node_modulate = null
+metadata/_custom_type_script = "uid://d2m0hkeep073t"
+
+[node name="TreeMapNode" type="Node2D" parent="TreeMap2" unique_id=581625242]
+position = Vector2(184, 64)
+script = ExtResource("2_ccixg")
+outputs = Array[int]([1])
+
+[node name="TreeMapNode2" type="Node2D" parent="TreeMap2" unique_id=1130245908]
+position = Vector2(320, 120)
+script = ExtResource("2_ccixg")
+outputs = Array[int]([2])
+inputs = Array[int]([0])
+
+[node name="TreeMapNode3" type="Node2D" parent="TreeMap2" unique_id=1025619947]
+position = Vector2(462.31366, 62.783356)
+script = ExtResource("2_ccixg")
+inputs = Array[int]([1])

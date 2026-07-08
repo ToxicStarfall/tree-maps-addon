@@ -6,13 +6,14 @@ signal moved
 #signal connections_edited
 
 
-@export var outputs: Array[int] = []
-@export var inputs: Array[int] = []
+@export var outputs: Array[int] = []  ## Internal use.
+@export var inputs: Array[int] = []  ## Internal use.
 
-@export var locked: bool = false
+@export var is_locked: bool = false  ## Internal use.
+@export_tool_button("Refresh", "Reload") var refresh_action = refresh  ## Refresh node drawing/visuals.
+
 #@export_category("Customization")
 #@export var data: Resource
-
 
 @export_category("Overrides")
 # Defaults are overidden by TreeMap parent.
@@ -64,23 +65,26 @@ func _setup():
 func _enter_tree() -> void:
 	if Engine.is_editor_hint():
 		set_notify_transform(true)
-		EditorInterface.get_inspector().property_edited.connect( _on_property_edited )
-	_setup()
+		Engine.get_singleton("EditorInterface").get_inspector().property_edited.connect( _on_property_edited )
+	#_setup()
 
 
 func _exit_tree() -> void:
 	if Engine.is_editor_hint():
-		EditorInterface.get_inspector().property_edited.disconnect( _on_property_edited )
+		Engine.get_singleton("EditorInterface").get_inspector().property_edited.disconnect( _on_property_edited )
 
 
 func _draw() -> void:
 	_draw_connection()
 	_draw_node()
+	_draw_status()
 
 
+## Draws the lines which connect two nodes together.
 func _draw_connection():
 	for i in outputs:
 		draw_set_transform(Vector2(0,0), 0)  # Reset drawing position
+		# TODO - Check if target node is of the same tree map parent
 		var target_pos = get_parent().get_child(i).global_position
 		draw_line(Vector2(0,0) , target_pos - self.global_position, line_color, parent_line_thickness)
 
@@ -91,6 +95,7 @@ func _draw_connection():
 		draw_texture(arrow_texture, -arrow_texture.get_size() / 2, arrow_color)
 
 
+## Draws the node.
 func _draw_node():
 	draw_set_transform(Vector2(0,0), 0)
 	if parent_node_texture:
@@ -98,14 +103,23 @@ func _draw_node():
 		draw_texture(parent_node_texture, texture_offset, node_color)
 	else:
 		draw_circle(Vector2(0,0), parent_node_size / 2, node_color, true)
-	#draw_colored_polygon()
+		#draw_colored_polygon()
+
+
+func _draw_status():
+	if is_locked:
+		draw_texture(preload("res://addons/tree_maps/icons/editor/Lock.svg"), Vector2(0.5, 0.5) * parent_node_size, Color.WHITE)
+	pass
 
 
 func _notification(what) -> void:
+	#if what == NOTIFICATION_EXIT_TREE:
+		#pass
 	if what == NOTIFICATION_TRANSFORM_CHANGED:
 		moved.emit(self)
 
 
+# property reset functionality
 func _property_can_revert(property: StringName) -> bool:
 	match property:
 		"line_color", "node_color", "arrow_color", "arrow_texture":
@@ -113,6 +127,7 @@ func _property_can_revert(property: StringName) -> bool:
 	return false
 
 
+#
 func _property_get_revert(property: StringName) -> Variant:
 	#match property:
 		#"line_color":
@@ -127,7 +142,7 @@ func _property_get_revert(property: StringName) -> Variant:
 
 #
 func _on_property_edited(property: String):
-	if EditorInterface.get_inspector().get_edited_object() == self:
+	if Engine.get_singleton("EditorInterface").get_inspector().get_edited_object() == self:
 		match property:
 			"line_color", "node_color", "arrow_color", "arrow_texture":
 				apply_properties()
@@ -146,13 +161,21 @@ func apply_properties():
 	queue_redraw()
 
 
+func refresh():
+	queue_redraw()
+
+
 func toggle_lock():
 	pass
 
 
 ## Adds a idx for node connections.
-func add_connection(idx: int, connection_array: Array[int]):
-	connection_array.append(idx)
+#func add_connection(idx: int, connection_array: Array[int]):
+func add_connection(idx: int, connection_array: String):
+	var a = get(connection_array).duplicate()
+	a.append(idx)
+	set(connection_array, a)
+	#connection_array.append(idx)
 	queue_redraw()
 
 
@@ -167,10 +190,11 @@ func swap_connection(idx, old_array, new_array):
 	new_array.append(idx)
 
 
-# Returns true/false if the Input/Output array has int value of "idx"
+## Returns true/false if the Input/Output array has int value of "idx"
 func has_connection(idx: int, connection_array: Array[int]):
 	return connection_array.has(idx)
 
 
+##
 func extend():
 	pass

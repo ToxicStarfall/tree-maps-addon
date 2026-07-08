@@ -1,0 +1,2 @@
+Fix selection loop when changing TreeMap selection from and back to
+a TreeMap withan active connection editing state.
